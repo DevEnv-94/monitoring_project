@@ -3,9 +3,20 @@
 
 - name: Update repositories cache and install iptables 
   apt:
-    name: iptables
+    name: "{{ item }}"
     state: present
     update_cache: True
+  with_items:
+    - iptables
+    - iptables-persistent
+
+
+
+- name: Create a iptables directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/iptables
+    state: directory
+    mode: '0755'
 
 
 - name: Copy file mysqld_exporter.service with owner and permissions
@@ -17,7 +28,24 @@
     mode: '0644'
 
 
+- name: restore firewall state from a file
+  community.general.iptables_state:
+    state: restored
+    path: /etc/iptables/rules.v4
+  async: "{{ ansible_timeout }}"
+  poll: 0
+
+
+
 - name: Save current state of the firewall in system file
   community.general.iptables_state:
     state: saved
     path: /etc/iptables/rules.v4
+
+
+
+- name: Make sure a service unit is running
+  ansible.builtin.systemd:
+    state: started
+    enabled: yes
+    name: netfilter-persistent.service
