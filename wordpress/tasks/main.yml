@@ -1,14 +1,12 @@
 ---
 # tasks file for wordpress
 
-
-
 - name: Create a wordpress directory if it does not exist
   ansible.builtin.file:
     path: /home/user/wordpress
     state: directory
     mode: '0755'
-
+  tags: wordpress
 
 - name: Copy file docker-compose.yml with owner and permissions
   ansible.builtin.template:
@@ -17,10 +15,21 @@
     owner: root
     group: root
     mode: '0644'
+  tags: wordpress
 
+- name: Copy file init.sql with owner and permissions
+  ansible.builtin.template:
+    src: templates/init.sql.j2
+    dest: /home/user/wordpress/init.sql
+    owner: root
+    group: root
+    mode: '0644'
+  tags: wordpress
 
 - name: Docker compose up
   community.docker.docker_compose:
     project_src: /home/user/wordpress
     state: present
   tags: wordpress
+
+

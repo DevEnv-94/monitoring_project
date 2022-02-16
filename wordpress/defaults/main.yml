@@ -1,2 +1,4 @@
 ---
 # defaults file for wordpress
+
+mysql_db_exporter_password: password

@@ -1,0 +1,2 @@
+CREATE USER 'exporter'@'{{ansible_eth1.ipv4.address}}' IDENTIFIED BY '{{mysql_db_exporter_password}}' WITH MAX_USER_CONNECTIONS 3;
+GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'{{ansible_eth1.ipv4.address}}';
