@@ -1,2 +1,23 @@
 ---
 # tasks file for iptables
+
+- name: Update repositories cache and install iptables 
+  apt:
+    name: iptables
+    state: present
+    update_cache: True
+
+
+- name: Copy file mysqld_exporter.service with owner and permissions
+  ansible.builtin.copy:
+    src: files/rules.v4
+    dest: /etc/iptables/rules.v4
+    owner: root
+    group: root
+    mode: '0644'
+
+
+- name: Save current state of the firewall in system file
+  community.general.iptables_state:
+    state: saved
+    path: /etc/iptables/rules.v4
