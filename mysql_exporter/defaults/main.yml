@@ -1,2 +1,4 @@
 ---
 # defaults file for mysql_exporter
+
+mysql_db_exporter_password: password
