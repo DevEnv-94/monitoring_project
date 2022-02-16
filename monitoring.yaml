@@ -1,0 +1,11 @@
+---
+
+-
+ 
+  hosts: docker
+  
+  roles: 
+    - docker
+
+
+...
