@@ -2,9 +2,11 @@
 
 -
  
-  hosts: iptables
+  hosts: node
   
   roles: 
+    - docker_compose
+    - wordpress
     - iptables
 
 
