@@ -55,6 +55,9 @@
     state: started
     enabled: yes
 
-- name: Install Docker Module for Python
+- name: Install Docker Module for Python and docker-compose
   pip:
-    name: docker
+    name: "{{ item }}"
+  with_items:
+   - docker
+   - docker-compose
