@@ -2,3 +2,20 @@
 # tasks file for cadvisor
 
 
+- name: cadvisor container up
+  community.docker.docker_container:
+    name: cadvisor
+    state: started
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "{{ansible_eth1.ipv4.address}}:8080:8080"
+    privileged: yes
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+  tags: cadvisor

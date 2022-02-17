@@ -4,7 +4,7 @@
 - name: mysql_exporter present 
   community.docker.docker_container:
     name: mysql_exporter
-    state: present
+    state: started
     image: prom/mysqld-exporter
     ports:
       - "{{ansible_eth1.ipv4.address}}:9104:9104"

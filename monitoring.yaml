@@ -7,7 +7,8 @@
   roles: 
     - docker_compose
     - wordpress
-
+    - cadvisor
+    - mysql_exporter
 
 
 
