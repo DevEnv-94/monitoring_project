@@ -3,7 +3,7 @@
 
 - name: Create a wordpress directory if it does not exist
   ansible.builtin.file:
-    path: /home/user/wordpress
+    path: /home/user/wordpress/scripts/
     state: directory
     mode: '0755'
   tags: wordpress
@@ -20,7 +20,7 @@
 - name: Copy file init.sql with owner and permissions
   ansible.builtin.template:
     src: templates/init.sql.j2
-    dest: /home/user/wordpress/init.sql
+    dest: /home/user/wordpress/scripts/init.sql
     owner: root
     group: root
     mode: '0644'

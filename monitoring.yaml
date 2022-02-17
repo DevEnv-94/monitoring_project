@@ -7,7 +7,9 @@
   roles: 
     - docker_compose
     - wordpress
-    - iptables
+
+
+
 
 
 ...
