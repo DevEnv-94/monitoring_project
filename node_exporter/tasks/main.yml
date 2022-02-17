@@ -1,2 +1,48 @@
 ---
 # tasks file for node_exporter
+
+- name: Check the /opt/node_exporter existance
+  stat:
+    path: /opt/node_exporter
+  register: directory_renamed
+  tags: node_exporter
+
+
+- name: Extract node_exporter-1.3.1.darwin-amd64.tar.gz into /opt/
+  ansible.builtin.unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.darwin-amd64.tar.gz
+    dest: /opt/
+    remote_src: yes
+  when: not directory_renamed.stat.exists
+  tags: node_exporter
+
+
+- name: Check the /opt/node_exporter-1.3.1.darwin-amd64 existance
+  stat:
+    path: /opt/node_exporter-1.3.1.darwin-amd64
+  register: directory
+  tags: node_exporter
+
+
+- name: rename directory /opt/node_exporter if does not exist
+  command: mv /opt/node_exporter-1.3.1.darwin-amd64  /opt/node_exporter
+  when: directory.stat.exists
+  tags: node_exporter
+
+
+- name: Copy file node_exporter.service with owner and permissions
+  ansible.builtin.template:
+    src: templates/node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+  tags: node_exporter
+
+
+- name: Restart service node_exporter, in all cases, also issue daemon-reload to pick up config changes
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: node_exporter
+  tags: node_exporter
