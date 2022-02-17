@@ -11,6 +11,8 @@
     - docker.io
     - containerd
     - runc
+  tags: docker
+
 
 - name: Update repositories cache and install all dependicies for docker and ansible on Ubuntu node.
   apt:
@@ -26,17 +28,20 @@
     - python3-pip
     - virtualenv
     - python3-setuptools
-
+  tags: docker
 
 - name: add docker GPG key
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
+  tags: docker
+
 
 - name: add docker repository to apt
   apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
     state: present
+  tags: docker
 
 
 - name: install docker
@@ -48,12 +53,16 @@
     - docker-ce
     - docker-ce-cli
     - containerd.io
+  tags: docker
+
 
 - name: Be sure that docker.service started
   service:
     name: docker
     state: started
     enabled: yes
+  tags: docker
+
 
 - name: Install Docker Module for Python and docker-compose
   pip:
@@ -61,3 +70,4 @@
   with_items:
    - docker
    - docker-compose
+  tags: docker
