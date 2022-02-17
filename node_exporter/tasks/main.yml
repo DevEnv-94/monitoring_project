@@ -30,7 +30,7 @@
   tags: node_exporter
 
 
-- name: Copy file node_exporter.service with owner and permissions
+- name: Copy template node_exporter.service with owner and permissions
   ansible.builtin.template:
     src: templates/node_exporter.service.j2
     dest: /etc/systemd/system/node_exporter.service
