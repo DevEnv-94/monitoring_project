@@ -3,7 +3,7 @@
 
 - name: Create a wordpress directory if it does not exist
   ansible.builtin.file:
-    path: /home/user/wordpress
+    path: /opt/wordpress
     state: directory
     mode: '0755'
   tags: wordpress
@@ -11,7 +11,7 @@
 - name: Copy file docker-compose.yml with owner and permissions
   ansible.builtin.template:
     src: templates/docker-compose.yml.j2
-    dest: /home/user/wordpress/docker-compose.yml
+    dest: /opt/wordpress/docker-compose.yml
     owner: root
     group: root
     mode: '0644'
@@ -20,7 +20,7 @@
 
 - name: Docker compose up
   community.docker.docker_compose:
-    project_src: /home/user/wordpress
+    project_src: /opt/wordpress
     state: present
   tags: wordpress
 
