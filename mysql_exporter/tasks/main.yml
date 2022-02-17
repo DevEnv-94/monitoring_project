@@ -9,5 +9,5 @@
     ports:
       - "{{ansible_eth1.ipv4.address}}:9104:9104"
     env:
-        DATA_SOURCE_NAME: "exporter:{{mysql_db_exporter_password}}@({{ansible_eth1.ipv4.address}}:3306)/"
+        DATA_SOURCE_NAME: "root:somewordpress@({{ansible_eth1.ipv4.address}}:3306)/"
   tags: mysql_exporter

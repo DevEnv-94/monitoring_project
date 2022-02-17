@@ -8,7 +8,6 @@ services:
       - "{{ansible_eth1.ipv4.address}}:3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - /home/user/wordpress/scripts/:/docker-entrypoint-initdb.d/
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
