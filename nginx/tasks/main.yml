@@ -30,7 +30,7 @@
     state: present
   tags: nginx
 
-- name: Creating a file with mysql credentials for exporter
+- name: Set up repository pinning to prefer Nginx packages over distribution-provided ones
   copy:
       dest: "/etc/apt/preferences.d/99nginx"
       content: |
@@ -46,3 +46,8 @@
     state: latest
     update_cache: yes
   tags: nginx
+
+- name: Ensure that nginx started
+  ansible.builtin.systemd:
+    state: started
+    name: nginx
