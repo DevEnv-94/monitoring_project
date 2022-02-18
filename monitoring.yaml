@@ -7,8 +7,11 @@
   roles: 
     - docker_compose
     - wordpress
+    - node_exporter
     - cadvisor
     - mysql_exporter
+    - iptables
+    - certbot_tls
 
 
 

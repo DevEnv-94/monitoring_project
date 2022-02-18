@@ -1,0 +1,71 @@
+---
+# tasks file for certbot
+
+- name: Remove certbot old versions
+  apt:
+    name: certbot
+    state: absent
+  tags: certbot
+
+
+- name: Update repositories cache and install snapd package
+  apt:
+    name: snapd
+    update_cache: yes
+    state: latest
+  tags: certbot
+
+
+- name: Install snap core
+  community.general.snap:
+    name: core
+    state: present
+  tags: certbot 
+
+- name: snap refresh core
+  ansible.builtin.shell: snap refresh core
+
+
+- name: Install certbot with snapd
+  community.general.snap:
+    name: certbot
+    classic: yes
+    state: present
+  tags: certbot
+
+- name: Check the /usr/bin/certbot existance
+  stat:
+    path: /usr/bin/certbot
+  register: certbot_link
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /snap/bin/certbot
+    dest: /usr/bin/certbot
+    owner: root
+    group: root
+    state: link
+  when: not certbot_link.stat.exists
+  tags: certbot
+
+
+- name: Create a /etc/letsencrypt directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/letsencrypt
+    state: directory
+    mode: '0755'
+  tags: certbot
+
+
+- name: Create a /var/www/html directory if it does not exists
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    mode: '0755'
+  tags: certbot
+
+- name: (Get certificates) This command will change the working directory to /etc/letsencrypt and will only run when live/{{domain}}/fullchain.pem doesn't exist
+  ansible.builtin.shell: certbot certonly --agree-tos -w /var/www/html/ --noninteractive --standalone --preferred-challenges http -d {{domain}} -d www.{{domain}} --register-unsafely-without-email
+  args:
+    chdir: /etc/letsencrypt
+    creates: live/{{domain}}/fullchain.pem
