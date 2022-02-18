@@ -5,7 +5,13 @@
   hosts: node
   
   roles: 
+    - docker_compose
+    - wordpress
+    - cadvisor
+    - mysql_exporter
+    - certbot_tls
     - nginx
+    - iptables
 
 
 

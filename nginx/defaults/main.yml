@@ -1,2 +1,4 @@
 ---
 # defaults file for nginx
+
+domain: devenv.quest
