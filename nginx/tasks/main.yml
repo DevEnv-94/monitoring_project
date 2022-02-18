@@ -30,16 +30,17 @@
     state: present
   tags: nginx
 
+- name: Creating a file with mysql credentials for exporter
+  copy:
+      dest: "/etc/apt/preferences.d/99nginx"
+      content: |
+        Package: *
+        Pin: origin nginx.org
+        Pin: release o=nginx
+        Pin-Priority: 900
 
-- name: Set up repository pinning to prefer Nginx packages over distribution-provided ones
-  ansible.builtin.shell:
-    cmd: echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | tee /etc/apt/preferences.d/99nginx
-  args:
-    creates: /etc/apt/preferences.d/99nginx
-  tags: nginx
 
-
-- name: install docker
+- name: install Nginx
   apt:
     name: nginx
     state: latest
