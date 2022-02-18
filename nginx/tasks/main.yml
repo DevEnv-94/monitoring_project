@@ -54,7 +54,7 @@
     enabled: yes
   tags: nginx
 
-- name: Recursively remove directory
+- name: remove default.conf 
   ansible.builtin.file:
     path: /etc/nginx/conf.d/default.conf
     state: absent
