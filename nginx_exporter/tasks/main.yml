@@ -1,2 +1,13 @@
 ---
 # tasks file for nginx_exporter
+
+
+- name: nginx_exporter container up
+  community.docker.docker_container:
+    name: nginx_exporter
+    state: started
+    image: nginx/nginx-prometheus-exporter:0.10.0
+    command: -nginx.scrape-uri=http://{{domain}}:8081/stub_status
+    ports:
+      - "{{ansible_eth1.ipv4.address}}:9113:9113"
+  tags: nginx_exporter
