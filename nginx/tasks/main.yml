@@ -38,10 +38,11 @@
         Pin: origin nginx.org
         Pin: release o=nginx
         Pin-Priority: 900
-
+  tags: nginx
 
 - name: install Nginx
   apt:
     name: nginx
     state: latest
     update_cache: yes
+  tags: nginx
