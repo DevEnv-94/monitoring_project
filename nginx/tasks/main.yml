@@ -76,9 +76,17 @@
   tags: nginx 
 
 
+- name: Automatically reload nginx with certbot certificate renewal 
+  copy:
+      dest: "/etc/letsencrypt/cli.ini"
+      content: deploy-hook = systemctl reload nginx
+  tags: nginx
+
+
 - name: Ensure that nginx reloaded
   ansible.builtin.systemd:
     state: reloaded
     name: nginx
     enabled: yes
   tags: nginx
+
