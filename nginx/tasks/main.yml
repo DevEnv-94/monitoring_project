@@ -1,2 +1,46 @@
 ---
 # tasks file for nginx
+
+
+- name: Update repositories cache and install all dependicies for Nginx 
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: True
+  with_items:
+    - ca-certificates
+    - curl
+    - gnupg2
+    - lsb-release
+    - software-properties-common
+    - ubuntu-keyring
+  tags: nginx
+
+
+- name: add nginx GPG key
+  apt_key:
+    url: https://nginx.org/keys/nginx_signing.key
+    state: present
+  tags: nginx
+
+
+- name: add nginx main repository to apt
+  apt_repository:
+    repo: deb http://nginx.org/packages/mainline/ubuntu {{ansible_distribution_release}} nginx
+    state: present
+  tags: nginx
+
+
+- name: Set up repository pinning to prefer Nginx packages over distribution-provided ones
+  ansible.builtin.shell:
+    cmd: echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | tee /etc/apt/preferences.d/99nginx
+  args:
+    creates: /etc/apt/preferences.d/99nginx
+  tags: nginx
+
+
+- name: install docker
+  apt:
+    name: nginx
+    state: latest
+    update_cache: yes
