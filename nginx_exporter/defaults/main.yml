@@ -1,2 +1,4 @@
 ---
 # defaults file for nginx_exporter
+
+domain: devenv.quest
