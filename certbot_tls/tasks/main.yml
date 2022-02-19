@@ -33,10 +33,7 @@
     state: present
   tags: certbot
 
-- name: Check the /usr/bin/certbot existance
-  stat:
-    path: /usr/bin/certbot
-  register: certbot_link
+
 
 - name: Create a symbolic link
   ansible.builtin.file:
@@ -45,7 +42,6 @@
     owner: root
     group: root
     state: link
-  when: not certbot_link.stat.exists
   tags: certbot
 
 
@@ -69,3 +65,4 @@
   args:
     chdir: /etc/letsencrypt
     creates: live/{{domain}}/fullchain.pem
+  tags: certbot
