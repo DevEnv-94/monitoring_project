@@ -65,19 +65,26 @@ server {
     # replace with the IP address of your resolver
     resolver 8.8.8.8;
 
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
+    location /cadvisor {
+        proxy_pass http://{{ansible_eth1.ipv4.address}}:8080/containers;
+    }
+
     location / {
         proxy_pass http://{{ansible_eth1.ipv4.address}}:8000;
         proxy_buffering on;
         proxy_buffers 12 12k;
         proxy_redirect off;
-
+        
+        proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header Host $host;
     }
 
-    location /cadvisor {
-        proxy_pass http://{{ansible_eth1.ipv4.address}}:8080;
-    }
-   
+
+
 }
