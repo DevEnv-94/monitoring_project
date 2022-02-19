@@ -43,6 +43,7 @@
 - name: Restart service node_exporter, in all cases, also issue daemon-reload to pick up config changes
   ansible.builtin.systemd:
     state: restarted
+    enabled: yes
     daemon_reload: yes
     name: node_exporter
   tags: node_exporter

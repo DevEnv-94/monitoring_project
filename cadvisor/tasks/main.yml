@@ -6,6 +6,7 @@
   community.docker.docker_container:
     name: cadvisor
     state: started
+    restart: yes
     image: gcr.io/cadvisor/cadvisor:latest
     ports:
       - "{{ansible_eth1.ipv4.address}}:8080:8080"

@@ -6,8 +6,9 @@
   community.docker.docker_container:
     name: nginx_exporter
     state: started
-    image: nginx/nginx-prometheus-exporter:0.10.0
-    command: -nginx.scrape-uri=http://{{domain}}:8081/stub_status
+    restart: yes
+    image: nginx/nginx-prometheus-exporter
+    command: -nginx.scrape-uri=http://localhost/nginx_status
     ports:
       - "{{ansible_eth1.ipv4.address}}:9113:9113"
   tags: nginx_exporter

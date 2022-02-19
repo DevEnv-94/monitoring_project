@@ -9,9 +9,12 @@
     - wordpress
     - cadvisor
     - mysql_exporter
+    - node_exporter
     - certbot_tls
     - nginx
+    - nginx_exporter
     - iptables
+  
 
 
 

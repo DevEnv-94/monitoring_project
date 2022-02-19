@@ -1,6 +1,6 @@
 ---
 
-- name: Allow connections on 22,80,443 ports
+- name: Allow connections tcp on 22,80,443 ports
   ansible.builtin.iptables:
     chain: INPUT
     protocol: tcp
@@ -8,6 +8,17 @@
       - "22"
       - "80"
       - "443"
+      - "53"
+    jump: ACCEPT
+  tags: iptables
+
+
+- name: Allow connections on 53 udp port
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: udp
+    destination_ports:
+      - "53"
     jump: ACCEPT
   tags: iptables
 
@@ -18,14 +29,14 @@
       - "lo"
       - "eth1"
     jump: ACCEPT
-  tags: ipatbles
+  tags: iptables
 
 - name: Allow related and established connections
   ansible.builtin.iptables:
     chain: INPUT
     ctstate: ESTABLISHED,RELATED
     jump: ACCEPT
-  tags: ipatbles
+  tags: iptables
 
 - name: -P INPUT DROP
   ansible.builtin.iptables:
