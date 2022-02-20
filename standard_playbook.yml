@@ -1,0 +1,12 @@
+- hosts: node                                                                                                                                                      
+  tasks:                                                                                                                                                           
+    - name: "List eth1 IPv4 address"                                                                                                                            
+      debug:                                                                                                                                                       
+        msg: "{{ansible_eth1.ipv4.address}}"
+
+
+- hosts: prometheus
+  tasks:
+    - name: "List eth1 IPv4 node address" 
+      debug: 
+        msg: "{{  hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}"

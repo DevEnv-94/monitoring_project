@@ -1,2 +1,37 @@
 ---
 # tasks file for prometheus
+
+
+- name: Create a prometheus directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/prometheus/prom-targets
+    state: directory
+    mode: '0755'
+  tags: prometheus
+
+- name: Copy file prometheus.yml with owner and permissions
+  ansible.builtin.template:
+    src: templates/prometheus.yml.j2
+    dest: /opt/prometheus/prometheus.yml
+    owner: root
+    group: root
+    mode: '0644'
+  tags: prometheus
+
+- name: prometheus container up
+  community.docker.docker_container:
+    name: prometheus
+    state: started
+    command: 
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus" 
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries" 
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.enable-admin-api"
+    restart: yes
+    image: prom/prometheus
+    ports:
+      - "{{ansible_eth1.ipv4.address}}:9090:9090"
+    volumes:
+      - /opt/prometheus:/etc/prometheus
+  tags: prometheus

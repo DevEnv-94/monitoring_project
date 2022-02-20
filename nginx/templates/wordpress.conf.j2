@@ -53,9 +53,6 @@ server {
         root /var/www/html;
     }
 
-    location /cadvisor {
-        proxy_pass http://{{ansible_eth1.ipv4.address}}:8080/containers;
-    }
 
     location / {
         proxy_pass http://{{ansible_eth1.ipv4.address}}:8000;

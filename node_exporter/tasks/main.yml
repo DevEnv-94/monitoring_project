@@ -8,24 +8,26 @@
   tags: node_exporter
 
 
-- name: Extract node_exporter-1.3.1.darwin-amd64.tar.gz into /opt/
+- name: Extract node_exporter-1.3.1.linux-amd64.tar.gz into /opt/
   ansible.builtin.unarchive:
-    src: https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.darwin-amd64.tar.gz
+    src: https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz
     dest: /opt/
     remote_src: yes
+    owner: root
+    group: root
   when: not directory_renamed.stat.exists
   tags: node_exporter
 
 
-- name: Check the /opt/node_exporter-1.3.1.darwin-amd64 existance
+- name: Check the /opt/node_exporter-1.3.1.linux-amd64 existance
   stat:
-    path: /opt/node_exporter-1.3.1.darwin-amd64
+    path: /opt/node_exporter-1.3.1.linux-amd64
   register: directory
   tags: node_exporter
 
 
-- name: rename directory /opt/node_exporter-1.3.1.darwin-amd64 to /opt/node_exporter if /opt/node_exporter-1.3.1.darwin-amd64 does exist
-  command: mv /opt/node_exporter-1.3.1.darwin-amd64  /opt/node_exporter
+- name: rename directory /opt/node_exporter-1.3.1.linux-amd64 to /opt/node_exporter if /opt/node_exporter-1.3.1.linux-amd64 does exist
+  command: mv /opt/node_exporter-1.3.1.linux-amd64  /opt/node_exporter
   when: directory.stat.exists
   tags: node_exporter
 
@@ -46,4 +48,11 @@
     enabled: yes
     daemon_reload: yes
     name: node_exporter
+  tags: node_exporter
+
+- name: Ensure that node_exporter started
+  ansible.builtin.systemd:
+    state: started
+    name: node_exporter
+    enabled: yes
   tags: node_exporter

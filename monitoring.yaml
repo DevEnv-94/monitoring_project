@@ -2,18 +2,13 @@
 
 -
  
-  hosts: node
+  hosts: prometheus
   
   roles: 
     - docker_compose
-    - wordpress
-    - cadvisor
-    - mysql_exporter
     - node_exporter
-    - certbot_tls
-    - nginx
-    - nginx_exporter
-    - iptables
+    - cadvisor
+    - prometheus
   
 
 
