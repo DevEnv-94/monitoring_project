@@ -6,9 +6,16 @@
     name: mysql_exporter
     state: started
     restart: yes
-    image: prom/mysqld-exporter
+    image: prom/mysqld-exporter:v0.13.0
     ports:
       - "{{ansible_eth1.ipv4.address}}:9104:9104"
     env:
-        DATA_SOURCE_NAME: "root:somewordpress@({{ansible_eth1.ipv4.address}}:3306)/"
+        DATA_SOURCE_NAME: "wordpress:wordpress@({{ansible_eth1.ipv4.address}}:3306)/wordpress"
+  tags: mysql_exporter
+
+
+- name: Ensure that mysql_exporer container started (if state "changed" it shows that wit container something wrong)
+  community.docker.docker_container:
+    name: mysql_exporter
+    state: started
   tags: mysql_exporter

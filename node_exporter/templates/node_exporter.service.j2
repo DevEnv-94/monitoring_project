@@ -9,6 +9,7 @@ Group=root
 Type=simple
 ExecStart=/opt/node_exporter/node_exporter \
     --collector.interrupts \
+    --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/) \
     --web.listen-address={{ansible_eth1.ipv4.address}}:9100
     
 [Install]

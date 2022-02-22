@@ -1,0 +1,38 @@
+---
+# tasks file for alertmanager
+
+
+- name: Create a alertmanager directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/alertmanager
+    state: directory
+    mode: '0755'
+  tags: alertmanager
+
+- name: Copy alerts rules to alerts/ directory with owner and permissions
+  ansible.builtin.copy:
+    src: files/alertmanager.yml
+    dest: /opt/alertmanager/
+    owner: root
+    group: root
+    mode: '0644'
+  tags: alertmanager
+
+- name: alertmanager container up
+  community.docker.docker_container:
+    name: alertmanager
+    state: started
+    restart: yes
+    image: prom/alertmanager:v0.23.0
+    ports:
+      - "{{ansible_eth1.ipv4.address}}:9093:9093"
+    volumes:
+      - /opt/alertmanager:/etc/alertmanager
+  tags: alertmanager
+
+
+- name: Ensure that alertmanager container started (if state "changed" it shows that with container something wrong)
+  community.docker.docker_container:
+    name: alertmanager
+    state: started
+  tags: alertmanager

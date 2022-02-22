@@ -1,10 +1,17 @@
 ---
 # tasks file for prometheus
 
-
-- name: Create a prometheus directory if it does not exist
+- name: Create a prometheus and prom-targets directory if it does not exist
   ansible.builtin.file:
     path: /opt/prometheus/prom-targets
+    state: directory
+    mode: '0755'
+  tags: prometheus
+
+
+- name: Create an alerts directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/prometheus/alerts
     state: directory
     mode: '0755'
   tags: prometheus
@@ -18,6 +25,25 @@
     mode: '0644'
   tags: prometheus
 
+- name: Copy file nodes.json to prom-targets/ directory with owner and permissions
+  ansible.builtin.template:
+    src: templates/nodes.json.j2
+    dest: /opt/prometheus/prom-targets/nodes.json
+    owner: root
+    group: root
+    mode: '0644'
+  tags: prometheus
+
+- name: Copy alerts rules to alerts/ directory with owner and permissions
+  ansible.builtin.copy:
+    src: files/
+    dest: /opt/prometheus/alerts/
+    owner: root
+    group: root
+    mode: '0644'
+  tags: prometheus
+
+
 - name: prometheus container up
   community.docker.docker_container:
     name: prometheus
@@ -29,9 +55,16 @@
       - "--web.console.templates=/usr/share/prometheus/consoles"
       - "--web.enable-admin-api"
     restart: yes
-    image: prom/prometheus
+    image: prom/prometheus:v2.33.3
     ports:
       - "{{ansible_eth1.ipv4.address}}:9090:9090"
     volumes:
       - /opt/prometheus:/etc/prometheus
+  tags: prometheus
+
+
+- name: Ensure that prometheus container started (if state "changed" it shows that with container something wrong)
+  community.docker.docker_container:
+    name: prometheus
+    state: started
   tags: prometheus

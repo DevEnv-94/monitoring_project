@@ -7,16 +7,20 @@
     name: cadvisor
     state: started
     restart: yes
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:v0.39.3
     ports:
       - "{{ansible_eth1.ipv4.address}}:8080:8080"
     privileged: yes
-    devices:
-      - /dev/kmsg
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
+  tags: cadvisor
+
+- name: Ensure that cadvisor container started (if state "changed" it shows that with container something wrong)
+  community.docker.docker_container:
+    name: cadvisor
+    state: started
   tags: cadvisor

@@ -1,15 +1,25 @@
 ---
 
+
+-
+ 
+  hosts: node
+
+
 -
  
   hosts: prometheus
   
   roles: 
     - docker_compose
-    - node_exporter
     - cadvisor
+    - node_exporter
     - prometheus
-  
+    - alertmanager
+    - grafana
+
+
+
 
 
 

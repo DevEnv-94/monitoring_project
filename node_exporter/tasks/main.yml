@@ -50,7 +50,7 @@
     name: node_exporter
   tags: node_exporter
 
-- name: Ensure that node_exporter started
+- name: Ensure that node_exporter service started
   ansible.builtin.systemd:
     state: started
     name: node_exporter

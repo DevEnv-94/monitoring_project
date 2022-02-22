@@ -1,0 +1,12 @@
+[
+    {
+            "targets": [
+                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:8080",
+                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:9104",
+                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:9100"
+            ],
+            "labels": {
+                    "env": "test"
+            }
+    }
+]

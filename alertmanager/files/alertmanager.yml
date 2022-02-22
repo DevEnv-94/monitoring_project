@@ -1,0 +1,62 @@
+route:
+  group_by: ['alertname']
+  group_wait: 60s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'slack-warning'
+  routes:
+  - receiver: 'prometheus-critical'
+    matchers:
+    - severity="critical"
+  - receiver: 'slack-warning'
+    matchers:
+    - severity=~"warning|info"
+  - receiver: 'DeadMansSwitch'
+    repeat_interval: 1m
+    group_wait: 0s
+    matchers:
+    - severity="none"
+
+
+receivers:
+- name: 'DeadMansSwitch'
+  webhook_configs:
+  - url: https://nosnch.in/480ead0118
+    send_resolved: false
+- name: 'prometheus-critical'
+  pagerduty_configs:
+  - service_key: 2af343030517490ec14ba83445a413a0
+- name: 'slack-warning'
+  slack_configs:
+    - api_url: https://hooks.slack.com/services/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
+      channel: '#warning-alerts-from-prometheus'
+      send_resolved: true
+      icon_url: https://avatars3.githubusercontent.com/u/3380462
+      title: |-
+          [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job }}
+          {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
+            {{" "}}(
+            {{- with .CommonLabels.Remove .GroupLabels.Names }}
+              {{- range $index, $label := .SortedPairs -}}
+                {{ if $index }}, {{ end }}
+                {{- $label.Name }}="{{ $label.Value -}}"
+              {{- end }}
+            {{- end -}}
+            )
+          {{- end }}
+      text: >-
+          {{ range .Alerts -}}
+          *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+          *Description:* {{ .Annotations.description }}
+          *Details:*
+            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+          {{ end }}
+
+
+inhibit_rules:
+  - source_matchers:
+    - severity="critical"
+    target_matchers:
+    - severity="warning"
+    equal: ['instance']

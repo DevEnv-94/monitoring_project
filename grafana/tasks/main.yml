@@ -1,2 +1,20 @@
 ---
 # tasks file for grafana
+
+
+- name: grafana container up
+  community.docker.docker_container:
+    name: grafana
+    state: started
+    restart: yes
+    image: grafana/grafana:main
+    ports:
+      - "3000:3000"
+  tags: grafana
+
+
+- name: Ensure that grafana container started (if state "changed" it shows that wit container something wrong)
+  community.docker.docker_container:
+    name: grafana
+    state: started
+  tags: grafana

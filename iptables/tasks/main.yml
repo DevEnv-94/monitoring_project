@@ -1,6 +1,6 @@
 ---
 
-- name: Allow connections tcp on 22,80,443 ports
+- name: Allow connections tcp on 53,22,80,443 ports
   ansible.builtin.iptables:
     chain: INPUT
     protocol: tcp

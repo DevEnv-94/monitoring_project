@@ -4,7 +4,14 @@ global:
   evaluation_interval: 15s
 
 rule_files:
-  - "*-alerts.yml"
+  - "alerts/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets: ['{{ansible_eth1.ipv4.address}}:9093']
+       
+
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -22,7 +29,7 @@ scrape_configs:
   - job_name: 'nodes'
     file_sd_configs:
     - files:
-      - '/etc/prom-targets/*.json'
+      - '/etc/prometheus/prom-targets/*.json'
       refresh_interval: 10s
 
 
