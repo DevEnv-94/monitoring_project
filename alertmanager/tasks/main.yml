@@ -9,7 +9,7 @@
     mode: '0755'
   tags: alertmanager
 
-- name: Copy alerts rules to alerts/ directory with owner and permissions
+- name: Copy alertmanager.yml  to /opt/alertmanager directory with owner and permissions
   ansible.builtin.copy:
     src: files/alertmanager.yml
     dest: /opt/alertmanager/
