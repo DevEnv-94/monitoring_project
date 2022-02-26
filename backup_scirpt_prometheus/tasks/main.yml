@@ -1,0 +1,11 @@
+---
+# tasks file for backup_scirpt_prometheus
+
+
+- name: Update repositories cache and install rsync package
+  apt:
+    name: rsync
+    update_cache: yes
+    state: latest
+  tags: backup_prometheus
+
