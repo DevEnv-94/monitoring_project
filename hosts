@@ -1,18 +1,17 @@
 [node]
-161.35.218.64
-
+64.227.117.90
 
 [node:vars]
 ansible_user=user
 ansible_become=true
-ansible_become_pass=jajvsqiahqnt
+ansible_become_pass=skojqnezcidj
 domain=lowsup.xyz
 
 [prometheus]
-142.93.164.113
+164.92.195.40
 
 [prometheus:vars]
 ansible_user=user
 ansible_become=true
-ansible_become_pass=raicnzyejgvo
+ansible_become_pass=exefzsgdbyiv
 domain=grafana.lowsup.xyz
