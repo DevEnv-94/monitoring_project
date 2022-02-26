@@ -16,6 +16,7 @@
     mode: '0755'
   tags: prometheus
 
+
 - name: Copy file prometheus.yml with owner and permissions
   ansible.builtin.template:
     src: templates/prometheus.yml.j2
@@ -60,6 +61,7 @@
       - "{{ansible_eth1.ipv4.address}}:9090:9090"
     volumes:
       - /opt/prometheus:/etc/prometheus
+      - promethus_data:/prometheus
   tags: prometheus
 
 
