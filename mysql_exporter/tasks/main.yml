@@ -1,7 +1,7 @@
 ---
 # tasks file for mysql_exporter
 
-- name: mysql_exporter present 
+- name: mysql_exporter container up
   community.docker.docker_container:
     name: mysql_exporter
     state: started
