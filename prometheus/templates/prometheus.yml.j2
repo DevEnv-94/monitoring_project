@@ -26,6 +26,11 @@ scrape_configs:
     static_configs:
       - targets: ['{{ansible_eth1.ipv4.address}}:8080']
 
+  - job_name: 'pushgateway'
+    honor_labels: true
+    static_configs:
+      - targets: ['{{ansible_eth1.ipv4.address}}:9091']
+
   - job_name: 'nodes'
     file_sd_configs:
     - files:
