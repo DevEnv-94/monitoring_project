@@ -1,2 +1,32 @@
 ---
-# tasks file for push-gateway
+# tasks file for pushgateway
+
+- name: Create a pushgateway directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/pushgateway
+    state: directory
+    mode: '0755'
+  tags: pushgateway
+
+
+- name: pushgateway container up
+  community.docker.docker_container:
+    name: pushgateway
+    state: started
+    restart: yes
+    command:
+      - "--persistence.interval=12h"
+      - "--persistence.file=/pushgateway/data"
+    image: prom/pushgateway:v1.4.2
+    ports:
+      - "{{ansible_eth1.ipv4.address}}:9091:9091"
+    volumes:
+      - /opt/pushgateway:/pushgateway
+  tags: pushgateway
+
+
+- name: Ensure that pushgateway container started (if state "changed" it shows that with container something wrong)
+  community.docker.docker_container:
+    name: pushgateway
+    state: started
+  tags: pushgateway
