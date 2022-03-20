@@ -4,8 +4,39 @@
 
 - name: Update repositories cache and install rsync package
   apt:
-    name: rsync
+    name: "{{ item }}"
     update_cache: yes
     state: latest
+  with_items:
+    - rsync
+    - tar  
+    - cron
   tags: backup_prometheus
 
+- name: Create a prom_backup_sh directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/prom_backup
+    state: directory
+    mode: '0755'
+  tags: backup_prometheus
+
+- name: Copy template wordpress.conf for nginx with owner and permissions
+  ansible.builtin.template:
+    src: templates/prometheus_backup_script.sh.j2
+    dest: /opt/prom_backup/prometheus_backup_script.sh
+    owner: root
+    group: root
+    mode: '0774'
+  tags: backup_prometheus
+
+
+- name: Ensure a prometheus backup script runs every day at 00:00 that  Creates an entry like ""
+  ansible.builtin.cron:
+    name: "backup prometheus data"
+    user: root
+    minute: "*"
+    day: "*/1"
+    hour: "17"
+    job: "/opt/prom_backup/prometheus_backup_script.sh"
+    cron_file: prometheus_data_backup
+  tags: backup_prometheus
