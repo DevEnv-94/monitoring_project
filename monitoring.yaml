@@ -3,7 +3,33 @@
 
 -
  
+  hosts: prometheus
+
+  roles:
+    - ssh_key_transfer
+
+
+-
+ 
   hosts: node
+  
+  roles: 
+    - ssh_key_transfer
+
+-
+ 
+  hosts: node
+  
+  roles: 
+    - docker_compose
+    - wordpress
+    - cadvisor
+    - mysql_exporter
+    - node_exporter
+    - certbot_tls
+    - nginx
+    - nginx_exporter
+
 
 
 -
@@ -14,13 +40,14 @@
     - docker_compose
     - cadvisor
     - node_exporter
+    - certbot_tls
+    - nginx
+    - nginx_exporter
     - push-gateway
     - prometheus
     - alertmanager
     - grafana
-
-
-
+    - backup_scirpt_prometheus
 
 
 
