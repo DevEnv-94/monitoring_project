@@ -1,6 +1,16 @@
+log_format nginx_exporter '$remote_addr - $remote_user [$time_local] "$request" '
+                         '$status $body_bytes_sent "$http_referer" '
+                         '"$http_user_agent" "$http_x_forwarded_for" '
+                        '$upstream_response_time $request_time';
+
+
+map $http_upgrade $connection_upgrade {
+   default upgrade;
+   '' close;
+  }
+
 server {
 	listen 80 ;
-
 
 	root /var/www/html;
 
@@ -8,6 +18,7 @@ server {
 
 	server_name {{domain}} www.{{domain}};
 
+  access_log /var/log/nginx/nginx.access.log nginx_exporter;
 
 	location / {
 	  return 301 https://$host$request_uri;
@@ -16,8 +27,14 @@ server {
 }
 
 
+upstream grafana {
+  server {{ansible_eth1.ipv4.address}}:3000;
+}
+
 server {
     listen 443 ssl http2 default_server;
+
+    access_log /var/log/nginx/nginx.access.log nginx_exporter;
 
     index index.html index.php index.htm index.nginx-debian.html;
 
@@ -54,13 +71,22 @@ server {
     }
 
 
+
     location / {
-        proxy_pass http://{{ansible_eth1.ipv4.address}}:3000;
-        proxy_set_header Host $http_host;
+      proxy_set_header Host $http_host;
+      proxy_pass http://grafana;
+    }
+    
+    location /api/live {
+      rewrite  ^/(.*)  /$1 break;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+      proxy_set_header Host $http_host;
+      proxy_pass http://grafana;
+  }
+    location /api/ruler/1/api/v1/rules {
+      return 200;
     }
 
-
-    location /cadvisor {
-        proxy_pass http://{{ansible_eth1.ipv4.address}}:8080;
-    }
 }
