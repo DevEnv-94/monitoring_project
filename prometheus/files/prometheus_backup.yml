@@ -1,0 +1,12 @@
+---
+groups:
+- name: instances
+  rules:
+  - alert: PrometheusBackUpDataTrouble
+    expr: prometheus_backup == 0
+    for: 13h
+    labels:
+      severity: critical
+    annotations:
+      summary: Prometheus backuping data doesnt work (instance {{ $labels.instance }})
+      description: "Prometheus backuping data doesnt work\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
