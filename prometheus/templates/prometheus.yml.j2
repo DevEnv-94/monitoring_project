@@ -31,6 +31,10 @@ scrape_configs:
     static_configs:
       - targets: ['{{ansible_eth1.ipv4.address}}:9091']
 
+  - job_name: 'prom_nginx_ex'
+    static_configs:
+      - targets: ['{{ansible_eth1.ipv4.address}}:4040']
+
   - job_name: 'nodes'
     file_sd_configs:
     - files:
