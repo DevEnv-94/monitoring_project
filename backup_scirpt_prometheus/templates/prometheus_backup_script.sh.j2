@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if curl -XPOST http://{{ansible_eth1.ipv4.address}}:9090/api/v1/admin/tsdb/snapshot &&
+
+cd /var/lib/docker/volumes/prometheus_data/_data/snapshots &&
+
+tar -czf "prometheus_backup_data-$(date '+%Y-%m-%d').tar.gz" $(ls /var/lib/docker/volumes/prometheus_data/_data/snapshots) &&
+
+rsync -e "ssh -o StrictHostKeyChecking=no" -zc --remove-source-files /var/lib/docker/volumes/prometheus_data/_data/snapshots/prometheus_backup_data-* {{backup_user}}@{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:/tmp/ &&
+
+rm -R /var/lib/docker/volumes/prometheus_data/_data/snapshots/*;
+
+then
+    echo 'prometheus_backup {type="boolean"} 1' | curl --data-binary @- http://{{ansible_eth1.ipv4.address}}:9091/metrics/job/prometheus_backup_data/instance/prometheus
+else
+    echo 'prometheus_backup {type="boolean"} 0' | curl --data-binary @- http://{{ansible_eth1.ipv4.address}}:9091/metrics/job/prometheus_backup_data/instance/prometheus
+
+fi
