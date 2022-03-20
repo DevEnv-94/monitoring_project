@@ -75,7 +75,7 @@
 - name: Copy template grafana.conf for nginx with owner and permissions
   ansible.builtin.template:
     src: templates/grafana.conf.j2
-    dest: /etc/nginx/conf.d/gradana.conf
+    dest: /etc/nginx/conf.d/grafana.conf
     owner: root
     group: root
     mode: '0644'
