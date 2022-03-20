@@ -1,0 +1,42 @@
+---
+# tasks file for nginx_exporter
+
+- name: Create a nginx_exporter directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/nginx_exporter
+    state: directory
+    mode: '0755'
+  tags: nginx_exporter
+
+
+- name: Copy prometheus-nginxlog-exporter.hcl to /opt/nginx_exporter directory with owner and permissions
+  ansible.builtin.copy:
+    src: files/prometheus-nginxlog-exporter.hcl
+    dest: /opt/nginx_exporter/prometheus-nginxlog-exporter.hcl
+    owner: root
+    group: root
+    mode: '0644'
+  tags: nginx_exporter
+
+
+- name: nginx_exporter container up
+  community.docker.docker_container:
+    name: nginx_exporter
+    state: started
+    command: 
+      - "-config-file /etc/prometheus-nginxlog-exporter.hcl"
+    restart: yes
+    image: quay.io/martinhelmich/prometheus-nginxlog-exporter:v1.9.2
+    ports:
+      - "{{ansible_eth1.ipv4.address}}:4040:4040"
+    volumes:
+      - /opt/nginx_exporter/prometheus-nginxlog-exporter.hcl:/etc/prometheus-nginxlog-exporter.hcl
+      - /var/log/nginx:/mnt/nginxlogs
+  tags: nginx_exporter
+
+
+- name: Ensure that nginx_exporter container started (if state "changed" it shows that with container something wrong)
+  community.docker.docker_container:
+    name: nginx_exporter
+    state: started
+  tags: nginx_exporter
