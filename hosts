@@ -1,17 +1,20 @@
 [node]
-64.227.117.90
+# IP address of your machine
+
 
 [node:vars]
-ansible_user=user
-ansible_become=true
-ansible_become_pass=skojqnezcidj
-domain=lowsup.xyz
+ansible_user= # User on your instance
+ansible_become= # Like a sudo behind a command
+ansible_become_pass= # Password of your user
+domain= # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
 
 [prometheus]
-164.92.195.40
+# IP address of your machine
+
 
 [prometheus:vars]
-ansible_user=user
-ansible_become=true
-ansible_become_pass=exefzsgdbyiv
-domain=grafana.lowsup.xyz
+ansible_user= # User on your instance
+ansible_become= # Like a sudo behind a command
+ansible_become_pass= # Password of your user
+domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
+backup_user= # In this case without any adjustment of project you should use same user which you used on [node] section.
