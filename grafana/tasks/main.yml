@@ -2,14 +2,34 @@
 # tasks file for grafana
 
 
+- name: Create a grafana directory if it does not exist
+  ansible.builtin.file:
+    path: /opt/grafana
+    state: directory
+    mode: '0755'
+  tags: grafana
+
+
+- name: Copy template grafana.ini for nginx with owner and permissions
+  ansible.builtin.template:
+    src: templates/grafana.ini.j2
+    dest: /opt/grafana/grafana.ini
+    owner: root
+    group: root
+    mode: '0664'
+  tags: grafana
+
+
 - name: grafana container up
   community.docker.docker_container:
     name: grafana
     state: started
     restart: yes
     image: grafana/grafana:main
+    volumes:
+      - /opt/grafana/grafana.ini:/etc/grafana/grafana.ini
     ports:
-      - "3000:3000"
+      - "{{ansible_eth1.ipv4.address}}:3000:3000"
   tags: grafana
 
 
