@@ -24,22 +24,22 @@ Technologies is used in the project: Prometheus, Ansible, Grafana, Alertmanager,
 ```ini
 [node]
 # IP address of your machine
-164.92.137.192
+
 
 [node:vars]
-ansible_user=user # User on your instance
-ansible_become=true # Like a sudo behind a command
-ansible_become_pass=qwerty # Password of your user
-domain=devenv.quest # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
+ansible_user= # User on your instance
+ansible_become= # Like a sudo behind a command
+ansible_become_pass= # Password of your user
+domain= # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
 
 [prometheus]
 # IP address of your machine
-164.92.184.183
+
 
 [prometheus:vars]
-ansible_user=user # User on your instance
-ansible_become=true # Like a sudo behind a command
-ansible_become_pass=qwerty # Password of your user
-domain=grafana.devenv.quest  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
-backup_user=user # In this case without any adjustment of project you should use same user which you used on [node] section.
+ansible_user= # User on your instance
+ansible_become= # Like a sudo behind a command
+ansible_become_pass= # Password of your user
+domain= # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
+backup_user= # In this case without any adjustment of project you should use same user which you used on [node] section.
 ```
