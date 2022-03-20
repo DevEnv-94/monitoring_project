@@ -61,7 +61,7 @@
       - "{{ansible_eth1.ipv4.address}}:9090:9090"
     volumes:
       - /opt/prometheus:/etc/prometheus
-      - promethus_data:/prometheus
+      - prometheus_data:/prometheus
   tags: prometheus
 
 
