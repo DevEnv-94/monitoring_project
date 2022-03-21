@@ -6,7 +6,7 @@ Ansible was used in project for gaining experience as well and like a guideline 
 Technologies is used in the project: Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose witf Mysqld), Node_exporter, Nginx_exporter.
 
 
-# Description of roles
+## Roles decription
 
 * [alertmanager](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/tasks/main.yml) role: creates requirement directory puts here alertmanager.yml config and starts alertmanager in docker on eth1 ip4 address on 9093 port.
 
@@ -54,6 +54,6 @@ ansible_become_pass= # Password of your user
 domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io . (without www subdomain)
 backup_user= # In this case without any adjustment of project you should use same user which you used on [node] section.
 
-#NB: domain names on node and prometheus sections have to be different but you can use on [prometheus] section your [node] domain with additional subdomain for example [grafana.yourdomain.com]
+#NB: Domain names on node and prometheus sections have to be different but you can use on [prometheus] section your [node] domain with additional subdomain for example [grafana.yourdomain.com]
 ```
 
