@@ -3,9 +3,9 @@
 This project was made for gaining some experience with Prometheus monitoring system and it's ecosystem.
 Ansible was used in project for gaining experience as well and like a guideline through the project.
 
-Technologies is used in the project: Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose witf Mysqld), Node_exporter, Nginx_exporter.
+Technologies is used in the project: Linux ,Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose witf Mysqld), Node_exporter, Nginx_exporter.
 
-## Roles description 
+## Roles brief description 
 
 
 * [docker_compose](https://github.com/DevEnv-94/monitoring_project/blob/master/docker_compose/tasks/main.yml) role: installs all requirement packages and then installs docker and docker-compose from docker repository.
@@ -22,9 +22,18 @@ Technologies is used in the project: Prometheus, Ansible, Grafana, Alertmanager,
 
 * [certbot_tls](https://github.com/DevEnv-94/monitoring_project/blob/master/certbot_tls/tasks/main.yml) role: downloads and updates snapd and then downloads certbot with snapd, creates required directories and makes TLS certificates for {{domain}} and www.{{domain}} mode:standalone with http(80port) challenge without email. and puts its to /etc/letsencrypt/live/{{domain}} directory.
 
-* [nginx](https://github.com/DevEnv-94/monitoring_project/blob/master/nginx/tasks/main.yml) role: downloads nginx:latest from official nginx repository and puts config files for site to ./nginx/conf.d/ and starts sites on HTTPS(443port) for [node] and [prometheus] puts here different config site files.
+* [nginx](https://github.com/DevEnv-94/monitoring_project/blob/master/nginx/tasks/main.yml) role: downloads nginx:latest from official nginx repository and puts config files for site to ./nginx/conf.d/ and starts sites on HTTPS(443port)(all HTTP traffic redirects to HTTPS) proxy to wordpress on [node] and grafana on [prometheus] puts here different config site files.
 
 * [nginx_exporter](https://github.com/DevEnv-94/monitoring_project/blob/master/nginx_exporter/tasks/main.yml) role: creates /opt/nginx_exporter direcory puts here [prometheus-nginxlog-exporter.hcl](https://github.com/DevEnv-94/monitoring_project/blob/master/nginx_exporter/tasks/main.yml) and starts nginx_exporter in Docker on eth1 ip4 address on 4040 port.
+
+* [prometheus](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/tasks/main.yml) role: creates /opt/prometheus, /opt/prometheus/prom-targets and /opt/prometheus/alerts directories puts here [prometheus.yml](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/prometheus.yml.j2) config file, [nodes.json](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/nodes.json.j2) with discovery targets and [rules](https://github.com/DevEnv-94/monitoring_project/tree/master/prometheus/files) files for alerts, after that starts prometheus in Docker on eth1 ip4 address on 9090 port.
+* [grafana](https://github.com/DevEnv-94/monitoring_project/blob/master/grafana/tasks/main.yml) role: creates /opt/grafana directory then puts here grafana.ini config and starts grafana in Docker on eth1 ip4 address on 3000 port.
+
+* [push-gateway](https://github.com/DevEnv-94/monitoring_project/blob/master/push-gateway/tasks/main.yml) role: starts pushgateway in Docker on eth1 ip4 address on 9091 port.
+
+* [backup_scipt_prometheus](https://github.com/DevEnv-94/monitoring_project/blob/master/backup_scirpt_prometheus/tasks/main.yml) role: installs required packages, creates /opt/prom_backup directory puts here script and creates cron job which starts that script every day at 17:00.
+
+* [ssh_key_transfer](https://github.com/DevEnv-94/monitoring_project/blob/master/backup_scirpt_prometheus/templates/prometheus_backup_script.sh.j2) role: creates ssh_key for root user on [prometheus] instance and sends ssh_pub.key to {{ansible_user}} on [node] [for backup script correct work]
 
 ## Requrimenets
 
@@ -37,7 +46,7 @@ Technologies is used in the project: Prometheus, Ansible, Grafana, Alertmanager,
 ```
 * Two instances and Ubuntu 20.04 on it.
 
-* LAN network between instances on eth1 interface on instances.
+* LAN network between instances on eth1 interface.
 
 * Sudo priveleges on your user on instances
 
@@ -50,7 +59,7 @@ Technologies is used in the project: Prometheus, Ansible, Grafana, Alertmanager,
 
 [node:vars]
 ansible_user= # User on your instance
-ansible_become=true # Like a sudo behind a command, should be true
+ansible_become=true # Like a sudo behind a command, must be true
 ansible_become_pass= # Password of your user
 domain= # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io . (without www subdomain)
 
@@ -60,7 +69,7 @@ domain= # Your domain name, for example you can get it here https://www.namechea
 
 [prometheus:vars]
 ansible_user= # User on your instance
-ansible_become=true # Like a sudo behind a command, should be true
+ansible_become=true # Like a sudo behind a command, must be true
 ansible_become_pass= # Password of your user
 domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io . (without www subdomain)
 backup_user= # In this case without any adjustment of project you should use same user which you used on [node] section.
