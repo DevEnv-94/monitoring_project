@@ -6,7 +6,7 @@ Ansible was used in project for gaining experience as well and like a guideline 
 Technologies is used in the project: Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose witf Mysqld), Node_exporter, Nginx_exporter.
 
 
-## Roles decription
+## Roles decription 
 
 * [alertmanager](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/tasks/main.yml) role: creates requirement directory puts here alertmanager.yml config and starts alertmanager in docker on eth1 ip4 address on 9093 port.
 
