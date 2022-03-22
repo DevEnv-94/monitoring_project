@@ -6,7 +6,7 @@ cd /var/lib/docker/volumes/prometheus_data/_data/snapshots &&
 
 tar -czf "prometheus_backup_data-$(date '+%Y-%m-%d').tar.gz" $(ls /var/lib/docker/volumes/prometheus_data/_data/snapshots) &&
 
-rsync -e "ssh -o StrictHostKeyChecking=no" -zc --remove-source-files /var/lib/docker/volumes/prometheus_data/_data/snapshots/prometheus_backup_data-* {{backup_user}}@{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:/tmp/ &&
+rsync -e "ssh -o StrictHostKeyChecking=no" -zc --remove-source-files /var/lib/docker/volumes/prometheus_data/_data/snapshots/prometheus_backup_data-* user@{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:/tmp/ &&
 
 rm -R /var/lib/docker/volumes/prometheus_data/_data/snapshots/*;
 
