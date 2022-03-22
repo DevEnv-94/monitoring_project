@@ -30,7 +30,7 @@
   tags: backup_prometheus
 
 
-- name: Ensure a prometheus backup script runs every day at 00:00 that  Creates an entry like ""
+- name: Ensure a prometheus backup script runs every day at 17:00 that
   ansible.builtin.cron:
     name: "backup prometheus data"
     user: root
