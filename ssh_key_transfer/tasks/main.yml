@@ -16,7 +16,7 @@
 
 - name: Copy the key add to authorized_keys using Ansible module
   authorized_key:
-    user: user
+    user: {{ ansible_user }}
     state: present
     key: "{{ lookup('file','ssh_key_transfer/files/prometheus-id_rsa.pub')}}"
   when: hostvars[inventory_hostname].group_names[0] == "node"
