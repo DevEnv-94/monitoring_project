@@ -6,7 +6,11 @@ Ansible was used in project for gaining experience as well and like a guideline 
 Technologies is used in the project: Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose witf Mysqld), Node_exporter, Nginx_exporter.
 
 
+<<<<<<< HEAD
 ## Roles description 
+=======
+## Roles decription 
+>>>>>>> c9ae8df456c84a4e0cb1e2474d2d212ce0ff6ec9
 
 * [docker_compose](https://github.com/DevEnv-94/monitoring_project/blob/master/docker_compose/tasks/main.yml) role: installs all requirement packages and then installs docker and docker-compose from docker repository.
 
