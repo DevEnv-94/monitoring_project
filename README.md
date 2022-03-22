@@ -33,7 +33,7 @@ Technologies is used in the project: Linux ,Prometheus, Ansible, Grafana, Alertm
 
 * [backup_scipt_prometheus](https://github.com/DevEnv-94/monitoring_project/blob/master/backup_scirpt_prometheus/tasks/main.yml) role: installs required packages, creates /opt/prom_backup directory puts here script and creates cron job which starts that script every day at 17:00.
 
-* [ssh_key_transfer](https://github.com/DevEnv-94/monitoring_project/blob/master/backup_scirpt_prometheus/templates/prometheus_backup_script.sh.j2) role: creates ssh_key for root user on [prometheus] instance and sends ssh_pub.key to {{ansible_user}} on [node] [for backup script correct work]
+* [ssh_key_transfer](https://github.com/DevEnv-94/monitoring_project/blob/master/backup_scirpt_prometheus/templates/prometheus_backup_script.sh.j2) role: creates ssh_key for root user on [prometheus] instance and sends ssh_pub.key to {{ansible_user}} on [node] instance [for backup script correct work]
 
 ## Requrimenets
 
