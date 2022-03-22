@@ -17,4 +17,3 @@ ansible_user= # User on your instance
 ansible_become= # Like a sudo behind a command
 ansible_become_pass= # Password of your user
 domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
-backup_user= # In this case without any adjustment of project you should use same user which you used on [node] section.
