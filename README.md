@@ -72,8 +72,38 @@ ansible_user= # User on your instance
 ansible_become=true # Like a sudo behind a command, must be true
 ansible_become_pass= # Password of your user
 domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io . (without www subdomain)
-backup_user= # In this case without any adjustment of project you should use same user which you used on [node] section.
 
-#NB: Domain names on node and prometheus sections have to be different but you can use on [prometheus] section your [node] domain with additional subdomain for example [grafana.yourdomain.com]
+#NB1: Domain names on node and prometheus sections have to be different but you can use on [prometheus] section your [node] domain with additional subdomain for example [grafana.yourdomain.com]
+#NB2: If you have choosed sslip.io or nip.io as a domain name #NB1 is should not concerned you, but may appear let'sencrypt limit error, because for this domain aquire many certificates.
 ```
 
+* Define options in [alertmanager.yml]
+
+```yaml
+  routes:
+  - receiver: 'critical-prometheus' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+    matchers:
+    - severity="critical"
+  - receiver: 'slack-warning'
+    matchers:
+    - severity=~"warning|info"
+  - receiver: 'DeadMansSwitch' # this reciever created for All prometheus monitoring system, always firing and sends signal every minute, when prometheus is dead, stops sending signal and you recieve alert.
+    repeat_interval: 1m
+    group_wait: 0s
+    matchers:
+    - severity="none"
+
+
+receivers:
+- name: 'DeadMansSwitch'
+  webhook_configs:
+  - url: #how to [https://deadmanssnitch.com/docs]
+    send_resolved: false
+- name: 'critical-prometheus' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+  pagerduty_configs:
+  - service_key: #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+- name: 'slack-warning'
+  slack_configs:
+    - api_url: #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
+      channel: '#' # must be same name as slack channel
+```
