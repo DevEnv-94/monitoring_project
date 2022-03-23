@@ -3,14 +3,14 @@ route:
   group_wait: 60s
   group_interval: 5m
   repeat_interval: 1h
-  receiver: 'slack-warning'
+  receiver: 'slack-warning' # basic reciever, if alert doesn't match any matchers this reciever gets alert.
   routes:
-  - receiver: 'critical-prometheus' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+  - receiver: ' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
     matchers:
-    - severity="critical"
+    - severity="critical" 
   - receiver: 'slack-warning'
     matchers:
-    - severity=~"warning|info"
+    - severity=~"warning|info" #Slack gets alerts with warning and info severity.
   - receiver: 'DeadMansSwitch'
     repeat_interval: 1m
     group_wait: 0s
@@ -21,15 +21,15 @@ route:
 receivers:
 - name: 'DeadMansSwitch'
   webhook_configs:
-  - url: https://nosnch.in/480ead0118
+  - url: #how to [https://deadmanssnitch.com/docs]
     send_resolved: false
-- name: 'critical-prometheus' 
+- name: ''  # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
   pagerduty_configs:
-  - service_key: R03DIT277I8YN71S5CSRFIYE993TCRXU
+  - service_key:  #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
 - name: 'slack-warning'
   slack_configs:
-    - api_url: https://hooks.slack.com/services/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
-      channel: '#warning-alerts-prometheus'
+    - api_url: #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
+      channel: '#'  # must be same name as slack channel
       send_resolved: true
       icon_url: https://avatars3.githubusercontent.com/u/3380462
       title: |-
