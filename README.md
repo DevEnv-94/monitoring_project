@@ -83,7 +83,7 @@ domain=  # Your domain name, for example you can get it here https://www.nameche
 #NB2: If you have choosed sslip.io or nip.io as a domain name #NB1 is should not concerned you, but may appear let'sencrypt limit error, because for this domain aquire many certificates.
 ```
 
-* Define options in [alertmanager.yml]()
+* Define options in [alertmanager.yml](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/files/alertmanager.yml)
 
 ```yaml
   routes:
@@ -173,29 +173,18 @@ scrape_configs:
       refresh_interval: 10s
 ```
 
-## Alertmanager
+## Rules
 
+* Some Rules is picked from [here](https://awesome-prometheus-alerts.grep.to/rules.html) and adjusted for this project:
 
-* alertmanager.yml config file you can find [here]().
+* Rules for [nginx](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/nginx.yml).
 
-* 
-```yaml
-route:
-  group_by: ['alertname']
-  group_wait: 60s
-  group_interval: 5m
-  repeat_interval: 1h
-  receiver: 'slack-warning' # basic reciever, if alert doesn't match any matchers this reciever gets alert.
-  routes:
-  - receiver: 'critical-prometheus' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
-    matchers:
-    - severity="critical"
-  - receiver: 'slack-warning'
-    matchers:
-    - severity=~"warning|info" #Slack gets alerts with warning and info severity.
-  - receiver: 'DeadMansSwitch'
-    repeat_interval: 1m
-    group_wait: 0s
-    matchers:
-    - severity="none"
-```
+* Rules for [docker](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/cadvisor.yml).
+
+* Rules for [mysql](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/mysql.yml).
+
+* Rules for [node_exporter](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/nodes.yml).
+
+* Rules for [prometheus](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/prometheus.yml)
+
+* Rule for backaging data from prometheus [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/prometheus_backup.yml)
