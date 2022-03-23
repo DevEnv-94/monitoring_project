@@ -116,7 +116,7 @@ receivers:
 
 ## Prometheus
 
-* Prometheus config file you can find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/prometheus.yml.j2)
+* Prometheus config file you can find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/prometheus.yml.j2).
 
 * Gathering metrics every 15s and evaluate rules every 15s
 ```yaml
@@ -125,7 +125,7 @@ global:
   evaluation_interval: 15s
 ```
 
-* All rules in alerts directory with yaml format
+* All rules in alerts directory with yaml format:
 ```yaml
 rule_files:
   - "alerts/*.yml"
@@ -164,7 +164,7 @@ scrape_configs:
       - targets: ['{{ansible_eth1.ipv4.address}}:4040']
 ```
 
-* All exporters on [node] instance connect with prometheus as Discovery targeting with file_sd_configs. More about it [here](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config).
+* All exporters on [node] instance connect with prometheus as Discovery target with file_sd_configs. More about it [here](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config). File of targets in json format [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/nodes.json.j2).
 ```yaml
   - job_name: 'nodes'
     file_sd_configs:
