@@ -50,12 +50,10 @@ Technologies is used in the project: Linux ,Prometheus, Ansible, Grafana, Alertm
 
 * Sudo priveleges on your user on instances
 
-* ```bash
+* Clone project on your instance with Ansible 
+
+```bash
 $ git clone https://github.com/DevEnv-94/monitoring_project.git
-
-$ cd monitoring_project
-
-$ ansible-playbook  monitoring.yaml
 ```
 
 * Define variables on [hosts](https://github.com/DevEnv-94/monitoring_project/blob/master/hosts) file:
