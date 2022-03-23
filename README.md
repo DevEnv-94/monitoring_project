@@ -22,7 +22,7 @@ Technologies is used in the project: Linux ,Prometheus, Ansible, Grafana, Alertm
 
 * [certbot_tls](https://github.com/DevEnv-94/monitoring_project/blob/master/certbot_tls/tasks/main.yml) role: downloads and updates snapd and then downloads certbot with snapd, creates required directories and makes TLS certificates for {{domain}} and www.{{domain}} mode:standalone with http(80port) challenge without email. and puts its to /etc/letsencrypt/live/{{domain}} directory.
 
-* [nginx](https://github.com/DevEnv-94/monitoring_project/blob/master/nginx/tasks/main.yml) role: downloads nginx:latest from official nginx repository and puts config files for site to ./nginx/conf.d/ and starts sites on HTTPS(443port)(all HTTP traffic redirects to HTTPS) proxy to wordpress on [node] and grafana on [prometheus] puts here different config site files.
+* [nginx](https://github.com/DevEnv-94/monitoring_project/blob/master/nginx/tasks/main.yml) role: downloads nginx:latest from official nginx repository and puts config files for site to ./nginx/conf.d/ and starts sites on HTTPS(443port)(all HTTP traffic redirects to HTTPS) proxy to wordpress on [node] and grafana on [prometheus].
 
 * [nginx_exporter](https://github.com/DevEnv-94/monitoring_project/blob/master/nginx_exporter/tasks/main.yml) role: creates /opt/nginx_exporter direcory puts here [prometheus-nginxlog-exporter.hcl](https://github.com/DevEnv-94/monitoring_project/blob/master/nginx_exporter/tasks/main.yml) and starts nginx_exporter in Docker on eth1 ip4 address on 4040 port.
 
@@ -113,4 +113,66 @@ receivers:
     - api_url: #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
       channel: '#' # must be same name as slack channel
 ```
+
+## Prometheus
+
+* Prometheus config file you can find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/prometheus.yml.j2)
+
+* Gathering metrics every 15s and evaluate rules every 15s
+```yaml
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+```
+
+* All rules in alerts directory with yaml format
+```yaml
+rule_files:
+  - "alerts/*.yml"
+```
+
+* Alerting
+```yaml
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets: ['{{ansible_eth1.ipv4.address}}:9093']
+```
+
+* All exporters on [prometheus] instance connect with prometheus as static_configs:
+```yaml
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['{{ansible_eth1.ipv4.address}}:9090']
+
+  - job_name: 'prom_node_ex'
+    static_configs:
+      - targets: ['{{ansible_eth1.ipv4.address}}:9100']
+
+  - job_name: 'prom_cadvisor_ex'
+    static_configs:
+      - targets: ['{{ansible_eth1.ipv4.address}}:8080']
+
+  - job_name: 'pushgateway'
+    honor_labels: true
+    static_configs:
+      - targets: ['{{ansible_eth1.ipv4.address}}:9091']
+
+  - job_name: 'prom_nginx_ex'
+    static_configs:
+      - targets: ['{{ansible_eth1.ipv4.address}}:4040']
+```
+
+* All exporters on [node] instance connect with prometheus as Discovery targeting with file_sd_configs. More about it [here](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config).
+```yaml
+  - job_name: 'nodes'
+    file_sd_configs:
+    - files:
+      - '/etc/prometheus/prom-targets/*.json'
+      refresh_interval: 10s
+```
+
+## Alertmanager
+
 
