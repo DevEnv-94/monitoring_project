@@ -50,6 +50,14 @@ Technologies is used in the project: Linux ,Prometheus, Ansible, Grafana, Alertm
 
 * Sudo priveleges on your user on instances
 
+* ```bash
+$ git clone https://github.com/DevEnv-94/monitoring_project.git
+
+$ cd monitoring_project
+
+$ ansible-playbook  monitoring.yaml
+```
+
 * Define variables on [hosts](https://github.com/DevEnv-94/monitoring_project/blob/master/hosts) file:
 
 ```ini
@@ -107,3 +115,4 @@ receivers:
     - api_url: #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
       channel: '#' # must be same name as slack channel
 ```
+
