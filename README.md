@@ -87,7 +87,7 @@ domain=  # Your domain name, for example you can get it here https://www.nameche
 
 ```yaml
   routes:
-  - receiver: 'critical-prometheus' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+  - receiver: '' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
     matchers:
     - severity="critical"
   - receiver: 'slack-warning'
@@ -105,7 +105,7 @@ receivers:
   webhook_configs:
   - url: #how to [https://deadmanssnitch.com/docs]
     send_resolved: false
-- name: 'critical-prometheus' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+- name: '' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
   pagerduty_configs:
   - service_key: #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
 - name: 'slack-warning'
