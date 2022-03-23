@@ -83,7 +83,7 @@ domain=  # Your domain name, for example you can get it here https://www.nameche
 #NB2: If you have choosed sslip.io or nip.io as a domain name #NB1 is should not concerned you, but may appear let'sencrypt limit error, because for this domain aquire many certificates.
 ```
 
-* Define options in [alertmanager.yml]
+* Define options in [alertmanager.yml]()
 
 ```yaml
   routes:
@@ -176,3 +176,26 @@ scrape_configs:
 ## Alertmanager
 
 
+* alertmanager.yml config file you can find [here]().
+
+* 
+```yaml
+route:
+  group_by: ['alertname']
+  group_wait: 60s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'slack-warning' # basic reciever, if alert doesn't match any matchers this reciever gets alert.
+  routes:
+  - receiver: 'critical-prometheus' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+    matchers:
+    - severity="critical"
+  - receiver: 'slack-warning'
+    matchers:
+    - severity=~"warning|info" #Slack gets alerts with warning and info severity.
+  - receiver: 'DeadMansSwitch'
+    repeat_interval: 1m
+    group_wait: 0s
+    matchers:
+    - severity="none"
+```
