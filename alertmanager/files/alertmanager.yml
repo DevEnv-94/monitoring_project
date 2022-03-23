@@ -18,7 +18,7 @@ route:
     - severity="none"
 
 
-receivers:
+receivers: 
 - name: 'DeadMansSwitch'
   webhook_configs:
   - url: #how to [https://deadmanssnitch.com/docs]
