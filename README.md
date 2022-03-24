@@ -12,7 +12,7 @@ Technologies is used in the project: Linux ,Prometheus, Ansible, Grafana, Alertm
 
 * [Wordpress](https://github.com/DevEnv-94/monitoring_project/tree/master/wordpress/tasks) role: creates directory /opt/wordpress puts here [docker-compose.yml](https://github.com/DevEnv-94/monitoring_project/blob/master/wordpress/templates/docker-compose.yml.j2) and starts wordpress in docker-compose.
 
-* [alertmanager](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/tasks/main.yml) role: creates /opt/alertmanager directory puts here alertmanager.yml config and starts alertmanager in docker on eth1 ip4 address on 9093 port.
+* [alertmanager](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/tasks/main.yml) role: creates /opt/alertmanager directory puts here [alertmanager.yml](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/files/alertmanager.yml) config and starts alertmanager in docker on eth1 ip4 address on 9093 port.
 
 * [cadvisor](https://github.com/DevEnv-94/monitoring_project/blob/master/cadvisor/tasks/main.yml) role: starts cadsisor in Docker on eth1 ip4 address on 8080 port.
 
@@ -188,3 +188,22 @@ scrape_configs:
 * Rules for [prometheus](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/prometheus.yml)
 
 * Rule for backaging data from prometheus [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/prometheus_backup.yml)
+
+
+## Alertmanager and alerts.
+
+* alertmanager.yml config file you find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/files/alertmanager.yml).
+
+* Example of PagerDuty alert. How to connect PagerDuty and Prometheus you can find [here](https://www.pagerduty.com/docs/guides/prometheus-integration-guide/).
+
+<details><summary>PagerDuty alert</summary>
+<p>
+
+#### We can hide anything, even code!
+
+    ```ruby
+      puts "Hello World"
+    ```
+
+</p>
+</details>
