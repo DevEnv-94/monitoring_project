@@ -315,3 +315,257 @@ This rule have to be always firing.
 
 </p>
 </details>
+
+## Grafana
+
+* Node_exporter Full Dasboard. ID 1860
+
+<details><summary>Node_exporter Dasboard</summary>
+<p>
+
+![Node_exporter dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/node_dasboard.png)
+
+</p>
+</details>
+
+* Mysql Dasboard. ID 7362
+
+<details><summary>Mysql Dasboard</summary>
+<p>
+
+![Mysql dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/mysql_dasboard.png)
+
+</p>
+</details>
+
+* Dokcer Dasboard. ID 11600
+
+<details><summary>Docker Dasboard</summary>
+<p>
+
+![Docker dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/docker_dasboard.png)
+
+</p>
+</details>
+
+* Nginx dasboard was barely modified and based on 6482 dasboard. ID 15947
+
+<details><summary>Docker Dasboard</summary>
+<p>
+
+![Ngixn dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/nginx_dasboard.png)
+
+</p>
+</details>
+
+## Nginx(WebServer)
+
+### [node] instance
+
+<details><summary>site config</summary>
+<p>
+
+```bash
+log_format nginx_exporter '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for" '
+                          '$upstream_response_time $request_time';
+
+server {
+	listen 80 ;
+
+	root /var/www/html;
+
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name {{domain}} www.{{domain}};
+
+  access_log /var/log/nginx/nginx.access.log nginx_exporter;
+
+	location / {
+	  return 301 https://$host$request_uri;
+	}
+
+}
+
+upstream wordpress {
+  server {{ansible_eth1.ipv4.address}}:8000;
+}
+
+server {
+    listen 443 ssl http2 default_server;
+
+    access_log /var/log/nginx/nginx.access.log nginx_exporter;
+
+    index index.html index.php index.htm index.nginx-debian.html;
+
+    ssl_certificate /etc/letsencrypt/live/{{domain}}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{domain}}/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
+    ssl_session_tickets off;
+
+    # curl https://ssl-config.mozilla.org/ffdhe2048.txt > /path/to/dhparam
+    ssl_dhparam /etc/nginx/dhparam;
+
+
+    # intermediate configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+
+    # HSTS (ngx_http_headers_module is required) (63072000 seconds)
+    add_header Strict-Transport-Security "max-age=63072000" always;
+
+    # OCSP stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    # verify chain of trust of OCSP response using Root CA and Intermediate certs
+    ssl_trusted_certificate /etc/letsencrypt/live/{{domain}}/fullchain.pem;
+
+    # replace with the IP address of your resolver
+    resolver 8.8.8.8;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
+
+    location / {
+        proxy_pass http://wordpress;
+        proxy_buffering on;
+        proxy_buffers 12 12k;
+        proxy_redirect off;
+        
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $host;
+    }
+
+
+
+}
+```
+</p>
+</details>
+
+<details><summary>Wordpress site</summary>
+<p>
+
+![Wordpress site](https://github.com/DevEnv-94/monitoring_project/blob/master/images/wordpress.png)
+
+</p>
+</details>
+
+### [prometheus] instance
+
+<details><summary>config site</summary>
+<p>
+
+```bash
+log_format nginx_exporter '$remote_addr - $remote_user [$time_local] "$request" '
+                         '$status $body_bytes_sent "$http_referer" '
+                         '"$http_user_agent" "$http_x_forwarded_for" '
+                        '$upstream_response_time $request_time';
+
+
+map $http_upgrade $connection_upgrade {
+   default upgrade;
+   '' close;
+  }
+
+server {
+	listen 80 ;
+
+	root /var/www/html;
+
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name {{domain}} www.{{domain}};
+
+  access_log /var/log/nginx/nginx.access.log nginx_exporter;
+
+	location / {
+	  return 301 https://$host$request_uri;
+	}
+
+}
+
+
+upstream grafana {
+  server {{ansible_eth1.ipv4.address}}:3000;
+}
+
+server {
+    listen 443 ssl http2 default_server;
+
+    access_log /var/log/nginx/nginx.access.log nginx_exporter;
+
+    index index.html index.php index.htm index.nginx-debian.html;
+
+    ssl_certificate /etc/letsencrypt/live/{{domain}}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{domain}}/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
+    ssl_session_tickets off;
+
+    # curl https://ssl-config.mozilla.org/ffdhe2048.txt > /path/to/dhparam
+    ssl_dhparam /etc/nginx/dhparam;
+
+
+    # intermediate configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+
+    # HSTS (ngx_http_headers_module is required) (63072000 seconds)
+    add_header Strict-Transport-Security "max-age=63072000" always;
+
+    # OCSP stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    # verify chain of trust of OCSP response using Root CA and Intermediate certs
+    ssl_trusted_certificate /etc/letsencrypt/live/{{domain}}/fullchain.pem;
+
+    # replace with the IP address of your resolver
+    resolver 8.8.8.8;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
+
+
+    location / {
+      proxy_set_header Host $http_host;
+      proxy_pass http://grafana;
+    }
+    
+    location /api/live {
+      rewrite  ^/(.*)  /$1 break;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+      proxy_set_header Host $http_host;
+      proxy_pass http://grafana;
+  }
+    location /api/ruler/1/api/v1/rules {
+      return 200;
+    }
+
+}
+```
+
+</p>
+</details>
+
+<details><summary>Grafana site</summary>
+<p>
+
+![Grafana site](https://github.com/DevEnv-94/monitoring_project/blob/master/images/grafana.png)
+
+</p>
+</details>
