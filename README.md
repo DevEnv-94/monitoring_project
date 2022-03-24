@@ -193,10 +193,71 @@ scrape_configs:
 
 ## Alertmanager and alerts.
 
-<details><summary>PagerDuty alert</summary>
+<details><summary>Alertmanager.yml config</summary>
 <p>
 
-![Alermanager config](https://github.com/DevEnv-94/monitoring_project/blob/master/images/pagerduty.png)
+```yaml
+route:
+  group_by: ['alertname']
+  group_wait: 60s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'slack-warning' # basic reciever, if alert doesn't match any matchers this reciever gets alert.
+  routes:
+  - receiver: '' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/ # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+    matchers:
+    - severity="critical" 
+  - receiver: 'slack-warning'
+    matchers:
+    - severity=~"warning|info" #Slack gets alerts with warning and info severity.
+  - receiver: 'DeadMansSwitch'
+    repeat_interval: 1m
+    group_wait: 0s
+    matchers:
+    - severity="none"
+
+
+receivers: 
+- name: 'DeadMansSwitch'
+  webhook_configs:
+  - url: #how to [https://deadmanssnitch.com/docs]
+    send_resolved: false
+- name: ''  # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+  pagerduty_configs:
+  - service_key:  #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+- name: 'slack-warning'
+  slack_configs:
+    - api_url: #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
+      channel: '#'  # must be same name as slack channel name
+      send_resolved: true
+      icon_url: https://avatars3.githubusercontent.com/u/3380462
+      title: |-
+          [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job }}
+          {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
+            {{" "}}(
+            {{- with .CommonLabels.Remove .GroupLabels.Names }}
+              {{- range $index, $label := .SortedPairs -}}
+                {{ if $index }}, {{ end }}
+                {{- $label.Name }}="{{ $label.Value -}}"
+              {{- end }}
+            {{- end -}}
+            )
+          {{- end }}
+      text: >-
+          {{ range .Alerts -}}
+          *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+          *Description:* {{ .Annotations.description }}
+          *Details:*
+            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+          {{ end }}
+inhibit_rules:
+  - source_matchers:
+    - severity="critical"
+    target_matchers:
+    - severity="warning"
+    equal: ['instance']
+```
 
 </p>
 </details>
@@ -237,7 +298,7 @@ This is reciever created for All prometheus monitoring system, always firing and
 
 This rule have to be always firing.
 
-![DeadManSnitch alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch.png)
+![DeadManSnitch rule](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch.png)
 
 <details><summary>Dasboard on DeadManSnitch service</summary>
 <p>
@@ -247,3 +308,10 @@ This rule have to be always firing.
 </p>
 </details>
 
+<details><summary>DeadManSnitch alert</summary>
+<p>
+
+![DeaManSnitch alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch_.png)
+
+</p>
+</details>
