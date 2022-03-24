@@ -164,7 +164,7 @@ scrape_configs:
       - targets: ['{{ansible_eth1.ipv4.address}}:4040']
 ```
 
-* All exporters on [node] instance connect with prometheus as Discovery target with file_sd_configs. More about it [here](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config). File of targets in json format [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/nodes.json.j2).
+* All exporters on [node] instance connect with prometheus as Discovery target with file_sd_configs. More about it [here](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config). File of targets in json format you can find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/nodes.json.j2).
 ```yaml
   - job_name: 'nodes'
     file_sd_configs:
@@ -172,6 +172,27 @@ scrape_configs:
       - '/etc/prometheus/prom-targets/*.json'
       refresh_interval: 10s
 ```
+
+<details><summary>nodes.json file</summary>
+<p>
+```json
+[
+    {
+            "targets": [
+                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:8080",
+                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:9104",
+                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:9100",
+                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:4040"
+            ],
+            "labels": {
+                    "env": "test"
+            }
+    }
+]
+```
+</p>
+</details>
+
 
 ## Rules
 
@@ -194,7 +215,7 @@ scrape_configs:
 
 * alertmanager.yml config file you find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/files/alertmanager.yml).
 
-* Example of PagerDuty alert. How to connect PagerDuty and Prometheus you can find [here](https://www.pagerduty.com/docs/guides/prometheus-integration-guide/).
+* Example of PagerDuty alert. How to connect PagerDuty and alertmanager you can find [here](https://www.pagerduty.com/docs/guides/prometheus-integration-guide/).
 
 <details><summary>PagerDuty alert</summary>
 <p>
@@ -203,3 +224,15 @@ scrape_configs:
 
 </p>
 </details>
+
+* Example of Slack alert. How to connect Slack and alertmanager you can find [here](https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/).
+
+<details><summary>Slack_channel alert</summary>
+<p>
+
+![PagerDuty alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/slack_alert.png)
+
+</p>
+</details>
+
+* DeadManSnitch alert. 
