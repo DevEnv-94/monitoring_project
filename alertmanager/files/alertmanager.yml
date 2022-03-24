@@ -5,7 +5,7 @@ route:
   repeat_interval: 1h
   receiver: 'slack-warning' # basic reciever, if alert doesn't match any matchers this reciever gets alert.
   routes:
-  - receiver: ' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+  - receiver: '' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/ # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
     matchers:
     - severity="critical" 
   - receiver: 'slack-warning'
@@ -29,7 +29,7 @@ receivers:
 - name: 'slack-warning'
   slack_configs:
     - api_url: #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
-      channel: '#'  # must be same name as slack channel
+      channel: '#'  # must be same name as slack channel name
       send_resolved: true
       icon_url: https://avatars3.githubusercontent.com/u/3380462
       title: |-
