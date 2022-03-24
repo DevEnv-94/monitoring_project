@@ -190,7 +190,6 @@ scrape_configs:
             }
     }
 ]
-
 ```
 </p>
 </details>
