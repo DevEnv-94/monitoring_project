@@ -615,7 +615,7 @@ fi
 * Scripts executes with cronjob every day at 17:00.
 
 ```yaml
-- name: Ensure a prometheus backup script runs every day at 17:00 that
+- name: Ensure a prometheus backup script runs every day at 17:00.
   ansible.builtin.cron:
     name: "backup prometheus data"
     user: root
