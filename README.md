@@ -3,7 +3,7 @@
 This project was made for gaining some experience with **Prometheus** monitoring system and it's ecosystem.
 **Ansible** was used in project for gaining experience as well and like a guideline through the project.
 
-Technologies is used in the project: **Linux ,Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose witf Mysqld), Node_exporter, Nginx_exporter.**
+**Technologies is used in the project:** Linux ,Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose witf Mysqld), Node_exporter, Nginx_exporter.
 
 ## Roles brief description 
 
@@ -193,7 +193,13 @@ scrape_configs:
 
 ## Alertmanager and alerts.
 
-* alertmanager.yml config file you find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/files/alertmanager.yml).
+<details><summary>PagerDuty alert</summary>
+<p>
+
+![Alermanager config](https://github.com/DevEnv-94/monitoring_project/blob/master/images/pagerduty.png)
+
+</p>
+</details>
 
 * Example of PagerDuty alert. How to connect PagerDuty and alertmanager you can find [here](https://www.pagerduty.com/docs/guides/prometheus-integration-guide/).
 
@@ -210,10 +216,34 @@ scrape_configs:
 <details><summary>Slack_channel alert</summary>
 <p>
 
-![PagerDuty alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/slack_alert.png)
+![Slack alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/slack_alert.png)
 
 </p>
 </details>
 
-#### DeadManSnitch alert. 
-This
+### DeadManSnitch alert. 
+This is reciever created for All prometheus monitoring system, always firing and sends signal every minute, when prometheus is dead or some trouble with alertmanager, stops sending signal and you recieve alert.
+
+
+```yaml
+  - alert: DeadMansSwitch
+    annotations:
+      description: This is a DeadMansSwitch meant to ensure that the entire Alerting pipeline is functional.
+      summary: Alerting DeadMansSwitch
+    expr: vector(1)
+    labels:
+     severity: none
+```
+
+This rule have to be always firing.
+
+![DeadManSnitch alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch.png)
+
+<details><summary>Dasboard on DeadManSnitch service</summary>
+<p>
+
+![DeaManSnitch dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch_.png)
+
+</p>
+</details>
+
