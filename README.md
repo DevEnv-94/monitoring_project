@@ -360,6 +360,8 @@ This rule have to be always firing.
 
 ## Nginx(WebServer)
 
+Nginx in this project for TLS termination and proxy to grafana on [prometheus] instance and proxy to wordpress on [node] instance.
+
 ### [node] instance
 
 <details><summary>site config</summary>
