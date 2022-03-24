@@ -173,26 +173,6 @@ scrape_configs:
       refresh_interval: 10s
 ```
 
-<details><summary>nodes.json file</summary>
-<p>
-```bash
-[
-    {
-            "targets": [
-                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:8080",
-                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:9104",
-                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:9100",
-                    "{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:4040"
-            ],
-            "labels": {
-                    "env": "test"
-            }
-    }
-]
-```
-</p>
-</details>
-
 
 ## Rules
 
