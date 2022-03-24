@@ -176,6 +176,7 @@ scrape_configs:
 <details><summary>nodes.json file</summary>
 <p>
 ```json
+
 [
     {
             "targets": [
@@ -189,6 +190,7 @@ scrape_configs:
             }
     }
 ]
+
 ```
 </p>
 </details>
