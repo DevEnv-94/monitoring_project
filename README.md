@@ -175,8 +175,7 @@ scrape_configs:
 
 <details><summary>nodes.json file</summary>
 <p>
-```json
-
+```bash
 [
     {
             "targets": [
