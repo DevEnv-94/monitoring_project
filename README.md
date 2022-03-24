@@ -311,7 +311,7 @@ This rule have to be always firing.
 <details><summary>DeadManSnitch alert</summary>
 <p>
 
-![DeaManSnitch alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch_.png)
+![DeaManSnitch alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch_alert.png)
 
 </p>
 </details>
