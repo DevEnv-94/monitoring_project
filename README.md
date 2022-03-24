@@ -14,7 +14,7 @@ This project was made for gaining some experience with **Prometheus** monitoring
 
 * [alertmanager](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/tasks/main.yml) **role:** creates /opt/alertmanager directory puts here [alertmanager.yml](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/files/alertmanager.yml) config and starts alertmanager in docker on eth1 ip4 address on 9093 port.
 
-* [cadvisor](https://github.com/DevEnv-94/monitoring_project/blob/master/cadvisor/tasks/main.yml) **role:** starts cadsisor in Docker on eth1 ip4 address on 8080 port.
+* [cadvisor](https://github.com/DevEnv-94/monitoring_project/blob/master/cadvisor/tasks/main.yml) **role:** starts docker_exporter in Docker on eth1 ip4 address on 8080 port.
 
 * [mysql_exporter](https://github.com/DevEnv-94/monitoring_project/blob/master/mysql_exporter/tasks/main.yml) **role:** starts mysqld-exporter on eth1 ip4 address on 9104 port.
 
@@ -350,7 +350,7 @@ This rule have to be always firing.
 
 * Nginx dasboard was barely modified and based on 6482 dasboard. ID 15947
 
-<details><summary>Docker Dasboard</summary>
+<details><summary>Nginx Dasboard</summary>
 <p>
 
 ![Ngixn dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/nginx_dasboard.png)
@@ -569,3 +569,66 @@ server {
 
 </p>
 </details>
+
+
+## Backup script and Pushgateway
+
+There is Prometheus backup script which creates snapshots then archive and compress it after that sends data to [node] instance and delete created snapshots and sends prometheus_backup metric to pushgateway with value=1 if script worked correctly and value=0 if execute was wrong.
+
+```bash
+#!/bin/bash
+
+if curl -XPOST http://{{ansible_eth1.ipv4.address}}:9090/api/v1/admin/tsdb/snapshot &&
+
+cd /var/lib/docker/volumes/prometheus_data/_data/snapshots &&
+
+tar -czf "prometheus_backup_data-$(date '+%Y-%m-%d').tar.gz" $(ls /var/lib/docker/volumes/prometheus_data/_data/snapshots) &&
+
+rsync -e "ssh -o StrictHostKeyChecking=no" -zc --remove-source-files /var/lib/docker/volumes/prometheus_data/_data/snapshots/prometheus_backup_data-* user@{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:/tmp/ &&
+
+rm -R /var/lib/docker/volumes/prometheus_data/_data/snapshots/*;
+
+then
+    echo 'prometheus_backup {type="boolean"} 1' | curl --data-binary @- http://{{ansible_eth1.ipv4.address}}:9091/metrics/job/prometheus_backup_data/instance/prometheus
+else
+    echo 'prometheus_backup {type="boolean"} 0' | curl --data-binary @- http://{{ansible_eth1.ipv4.address}}:9091/metrics/job/prometheus_backup_data/instance/prometheus
+
+fi
+```
+
+<details><summary>Prometheus_backup metric</summary>
+<p>
+
+![Prometheus_backup metric](https://github.com/DevEnv-94/monitoring_project/blob/master/images/prom_backup_metric.png)
+
+</p>
+</details>
+
+* to create a prometheus data snapshot you need starts prometheus with this command.
+
+```bash
+--web.enable-admin-api
+```
+
+* Scripts executes with cronjob every day at 17:00.
+
+```yaml
+- name: Ensure a prometheus backup script runs every day at 17:00 that
+  ansible.builtin.cron:
+    name: "backup prometheus data"
+    user: root
+    minute: "*"
+    day: "*/1"
+    hour: "17"
+    job: "/opt/prom_backup/prometheus_backup_script.sh"
+    cron_file: prometheus_data_backup
+  tags: backup_prometheus
+```
+
+## Security
+
+All exporters, alertmanager and Prometheus interact  between itselfs on local network. Nobody has access to it from Internet.
+
+## License
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
