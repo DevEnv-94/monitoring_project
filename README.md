@@ -199,11 +199,7 @@ scrape_configs:
 <details><summary>PagerDuty alert</summary>
 <p>
 
-#### We can hide anything, even code!
-
-    ```ruby
-      puts "Hello World"
-    ```
+![PagerDuty alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/pagerduty.png)
 
 </p>
 </details>
