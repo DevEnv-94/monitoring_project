@@ -4,7 +4,7 @@
 
 [node:vars]
 ansible_user= # User on your instance
-ansible_become= # Like a sudo behind a command
+ansible_become=true # Like a sudo behind a command
 ansible_become_pass= # Password of your user
 domain= # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
 
@@ -14,7 +14,7 @@ domain= # Your domain name, for example you can get it here https://www.namechea
 
 [prometheus:vars]
 ansible_user= # User on your instance
-ansible_become= # Like a sudo behind a command
+ansible_become=true # Like a sudo behind a command
 ansible_become_pass= # Password of your user
 domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
 backup_user= #in my case just this user just [node] instance ansible user. Just for test purposes.
