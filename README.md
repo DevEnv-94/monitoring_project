@@ -78,6 +78,7 @@ ansible_user= # User on your instance
 ansible_become=true # Like a sudo behind a command, must be true
 ansible_become_pass= # Password of your user
 domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io . (without www subdomain)
+backup_user= #in my case just this user just [node] instance ansible user. Just for test purposes.
 
 #NB1: Domain names on node and prometheus sections have to be different but you can use on [prometheus] section your [node] domain with additional subdomain for example [grafana.yourdomain.com]
 #NB2: If you have choosed sslip.io or nip.io as a domain name #NB1 is should not concerned you, but may appear let'sencrypt limit error, because for this domain aquire many certificates.
