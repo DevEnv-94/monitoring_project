@@ -620,8 +620,7 @@ fi
   ansible.builtin.cron:
     name: "backup prometheus data"
     user: root
-    minute: "*"
-    day: "*/1"
+    minute: "0"
     hour: "17"
     job: "/opt/prom_backup/prometheus_backup_script.sh"
     cron_file: prometheus_data_backup
