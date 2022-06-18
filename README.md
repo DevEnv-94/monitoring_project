@@ -146,7 +146,7 @@ scrape_configs:
 
 ## Alertmanager and alerts.
 
-<details><summary>Alertmanager.yml config</summary>
+<details><summary>Alertmanager.yml config (click here)</summary>
 <p>
 
 ```yaml
@@ -217,7 +217,7 @@ inhibit_rules:
 
 * Example of PagerDuty alert. How to connect PagerDuty and alertmanager you can find [here](https://www.pagerduty.com/docs/guides/prometheus-integration-guide/).
 
-<details><summary>PagerDuty alert</summary>
+<details><summary>PagerDuty alert (click here)</summary>
 <p>
 
 ![PagerDuty alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/pagerduty.png)
@@ -227,7 +227,7 @@ inhibit_rules:
 
 * Example of Slack alert. How to connect Slack and alertmanager you can find [here](https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/).
 
-<details><summary>Slack_channel alert</summary>
+<details><summary>Slack_channel alert (click here)</summary>
 <p>
 
 ![Slack alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/slack_alert.png)
@@ -253,7 +253,7 @@ This rule have to be always firing.
 
 ![DeadManSnitch rule](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch.png)
 
-<details><summary>Dasboard on DeadManSnitch service</summary>
+<details><summary>Dasboard on DeadManSnitch service (click here)</summary>
 <p>
 
 ![DeaManSnitch dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch_.png)
@@ -261,7 +261,7 @@ This rule have to be always firing.
 </p>
 </details>
 
-<details><summary>DeadManSnitch alert</summary>
+<details><summary>DeadManSnitch alert (click here)</summary>
 <p>
 
 ![DeaManSnitch alert](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch_alert.png)
@@ -273,7 +273,7 @@ This rule have to be always firing.
 
 * Node_exporter Full Dasboard. ID 1860
 
-<details><summary>Node_exporter Dasboard</summary>
+<details><summary>Node_exporter Dasboard (click here)</summary>
 <p>
 
 ![Node_exporter dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/node_dasboard.png)
@@ -283,7 +283,7 @@ This rule have to be always firing.
 
 * Mysql Dasboard. ID 7362
 
-<details><summary>Mysql Dasboard</summary>
+<details><summary>Mysql Dasboard (click here)</summary>
 <p>
 
 ![Mysql dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/mysql_dasboard.png)
@@ -293,7 +293,7 @@ This rule have to be always firing.
 
 * Dokcer Dasboard. ID 11600
 
-<details><summary>Docker Dasboard</summary>
+<details><summary>Docker Dasboard (click here)</summary>
 <p>
 
 ![Docker dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/docker_dasboard.png)
@@ -303,7 +303,7 @@ This rule have to be always firing.
 
 * Nginx dasboard was barely modified and based on 6482 dasboard. ID 15947
 
-<details><summary>Nginx Dasboard</summary>
+<details><summary>Nginx Dasboard (click here)</summary>
 <p>
 
 ![Ngixn dasboard](https://github.com/DevEnv-94/monitoring_project/blob/master/images/nginx_dasboard.png)
@@ -317,7 +317,7 @@ Nginx in this project as TLS termination proxy. Proxy to grafana on [prometheus]
 
 ### [node] instance
 
-<details><summary>site config</summary>
+<details><summary>site config (click here)</summary>
 <p>
 
 ```bash
@@ -406,7 +406,7 @@ server {
 </p>
 </details>
 
-<details><summary>Wordpress site</summary>
+<details><summary>Wordpress site (click here)</summary>
 <p>
 
 ![Wordpress site](https://github.com/DevEnv-94/monitoring_project/blob/master/images/wordpress.png)
@@ -416,7 +416,7 @@ server {
 
 ### [prometheus] instance
 
-<details><summary>config site</summary>
+<details><summary>config site (click here)</summary>
 <p>
 
 ```bash
@@ -517,7 +517,7 @@ server {
 </p>
 </details>
 
-<details><summary>Grafana site</summary>
+<details><summary>Grafana site (click here)</summary>
 <p>
 
 ![Grafana site](https://github.com/DevEnv-94/monitoring_project/blob/master/images/grafana.png)
@@ -551,7 +551,7 @@ else
 fi
 ```
 
-<details><summary>Prometheus_backup metric</summary>
+<details><summary>Prometheus_backup metric (click here)</summary>
 <p>
 
 ![Prometheus_backup metric](https://github.com/DevEnv-94/monitoring_project/blob/master/images/prom_backup_metric.png)
