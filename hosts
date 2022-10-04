@@ -18,3 +18,7 @@ ansible_become=true # Like a sudo behind a command
 ansible_become_pass= # Password of your user
 domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io .
 backup_user= #in my case it's just [node] instance ansible user. For test purposes.
+deadmanssnitch_url= #how to [https://deadmanssnitch.com/docs]
+pageduty_service_key= #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+slack_api_url= #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
+slack_channel= # must be same name as slack channel name without '#'
