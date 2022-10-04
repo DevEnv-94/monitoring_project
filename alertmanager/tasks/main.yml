@@ -10,8 +10,8 @@
   tags: alertmanager
 
 - name: Copy alertmanager.yml  to /opt/alertmanager directory with owner and permissions
-  ansible.builtin.copy:
-    src: files/alertmanager.yml
+  ansible.builtin.template:
+    src: templates/alertmanager.yml
     dest: /opt/alertmanager/
     owner: root
     group: root
