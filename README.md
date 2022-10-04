@@ -3,7 +3,7 @@
 This project was made for gaining some experience with **Prometheus** monitoring system and it's ecosystem.
 Full Project was automated with **Ansible** except graphs in Grafana.
 
-**Technologies is used in the project:** Linux ,Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose witf Mysqld), Node_exporter, Nginx_exporter.
+**Technologies is used in the project:** Linux ,Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose with Mysqld), Node_exporter, Nginx_exporter.
 
 
 ## Requrimenets
@@ -31,41 +31,15 @@ ansible_become=true # Like a sudo behind a command, must be true
 ansible_become_pass= # Password of your user
 domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io . (without www subdomain)
 backup_user= #in my case it's just [node] instance ansible user. For test purposes.
+deadmanssnitch_url= #how to [https://deadmanssnitch.com/docs]
+pageduty_service_key= #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+slack_api_url= #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
+slack_channel= # must be same name as slack channel name without '#'
 
 #NB1: Domain names on node and prometheus sections have to be different but you can use on [prometheus] section your [node] domain with additional subdomain for example [grafana.yourdomain.com]
 #NB2: If you have choosed sslip.io or nip.io as a domain name #NB1 is should not concerned you, but may appear let'sencrypt limit error, because for this domain aquire many certificates.
 ```
 
-* Define options in [alertmanager.yml](https://github.com/DevEnv-94/monitoring_project/blob/master/alertmanager/files/alertmanager.yml)
-
-```yaml
-  routes:
-  - receiver: '' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
-    matchers:
-    - severity="critical"
-  - receiver: 'slack-warning'
-    matchers:
-    - severity=~"warning|info"
-  - receiver: 'DeadMansSwitch' # this reciever created for All prometheus monitoring system, always firing and sends signal every minute, when prometheus is dead, stops sending signal and you recieve alert.
-    repeat_interval: 1m
-    group_wait: 0s
-    matchers:
-    - severity="none"
-
-
-receivers:
-- name: 'DeadMansSwitch'
-  webhook_configs:
-  - url: #how to [https://deadmanssnitch.com/docs]
-    send_resolved: false
-- name: '' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
-  pagerduty_configs:
-  - service_key: #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
-- name: 'slack-warning'
-  slack_configs:
-    - api_url: #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
-      channel: '#' # must be same name as slack channel
-```
 
 ## Prometheus
 
@@ -157,12 +131,14 @@ route:
   repeat_interval: 1h
   receiver: 'slack-warning' # basic reciever, if alert doesn't match any matchers this reciever gets alert.
   routes:
-  - receiver: '' # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/ # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+  - receiver: 'pagerduty-notifications'
     matchers:
     - severity="critical" 
+
   - receiver: 'slack-warning'
     matchers:
     - severity=~"warning|info" #Slack gets alerts with warning and info severity.
+
   - receiver: 'DeadMansSwitch'
     repeat_interval: 1m
     group_wait: 0s
@@ -173,18 +149,21 @@ route:
 receivers: 
 - name: 'DeadMansSwitch'
   webhook_configs:
-  - url: #how to [https://deadmanssnitch.com/docs]
+  - url: {{ deadmanssnitch_url }} #how to [https://deadmanssnitch.com/docs]
     send_resolved: false
-- name: ''  # must be same as service name on PagerDuty https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+
+- name: 'pagerduty-notifications' 
   pagerduty_configs:
-  - service_key:  #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+  - service_key: {{ pageduty_service_key }} #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
+    send_resolved: true
+
 - name: 'slack-warning'
   slack_configs:
-    - api_url: #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
-      channel: '#'  # must be same name as slack channel name
+    - api_url: {{ slack_api_url }} #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
+      channel: '#{{ slack_channel }}'  # must be same name as slack channel name
       send_resolved: true
       icon_url: https://avatars3.githubusercontent.com/u/3380462
-      title: |-
+      title: {% raw %}|-
           [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job }}
           {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
             {{" "}}(
@@ -203,7 +182,9 @@ receivers:
           *Details:*
             {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
             {{ end }}
-          {{ end }}
+          {{ end }} {% endraw %}
+
+
 inhibit_rules:
   - source_matchers:
     - severity="critical"
