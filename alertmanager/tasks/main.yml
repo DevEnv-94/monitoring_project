@@ -11,8 +11,8 @@
 
 - name: Copy alertmanager.yml  to /opt/alertmanager directory with owner and permissions
   ansible.builtin.template:
-    src: templates/alertmanager.yml
-    dest: /opt/alertmanager/
+    src: templates/alertmanager.yml.j2
+    dest: /opt/alertmanager/alertmanager.yml
     owner: root
     group: root
     mode: '0644'
