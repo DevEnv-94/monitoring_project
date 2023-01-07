@@ -1,10 +1,8 @@
 # monitoring_project
 
-This project was made for gaining some experience with **Prometheus** monitoring system and it's ecosystem.
-Full Project was automated with **Ansible** except graphs in Grafana.
+The purpose of this project was to gain experience with the Prometheus monitoring system and its ecosystem. The entire project was automated using **Ansible**, with the exception of the graphs in Grafana.
 
-**Technologies is used in the project:** Linux ,Prometheus, Ansible, Grafana, Alertmanager, Nginx(Webserver), Docker, Certbot(Let'sencrypt), Pushgateway_exporter, cadvisor_exporter(Docker_exporter), Mysqld_exporter, Wordpress(in Docker-Compose with Mysqld), Node_exporter, Nginx_exporter.
-
+The following technologies were used in the project: Linux, Prometheus, Ansible, Grafana, Alertmanager, Nginx (web server), Docker, Certbot (Let's Encrypt), Pushgateway exporter, cadvisor exporter (Docker exporter), Mysqld exporter, Wordpress (in Docker Compose with Mysqld), Node exporter, and Nginx exporter.
 
 ## Requrimenets
 
