@@ -12,45 +12,43 @@ The following technologies were used in the project: Linux, Prometheus, Ansible,
 [node]
 # IP address of your machine
 
-
 [node:vars]
 ansible_user= # User on your instance
-ansible_become=true # Like a sudo behind a command, must be true
-ansible_become_pass= # Password of your user
-domain= # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io . (without www subdomain)
+ansible_become=true # Like a sudo command, must be true
+ansible_become_pass= # Password for the user
+domain= # Your domain name. You can get one from a site like namecheap.com, or use a free service like sslip.io or nip.io (do not include the "www" subdomain)
 
 [prometheus]
 # IP address of your machine
 
-
 [prometheus:vars]
 ansible_user= # User on your instance
-ansible_become=true # Like a sudo behind a command, must be true
-ansible_become_pass= # Password of your user
-domain=  # Your domain name, for example you can get it here https://www.namecheap.com or use something free like https://sslip.io or https://nip.io . (without www subdomain)
-backup_user= #in my case it's just [node] instance ansible user. For test purposes.
-deadmanssnitch_url= #how to [https://deadmanssnitch.com/docs]
-pageduty_service_key= #How to https://www.pagerduty.com/docs/guides/prometheus-integration-guide/
-slack_api_url= #How to [https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/]
-slack_channel= # must be same name as slack channel name without '#'
+ansible_become=true # Like a sudo command, must be true
+ansible_become_pass= # Password for the user
+domain= # Your domain name. You can get one from a site like namecheap.com, or use a free service like sslip.io or nip.io (do not include the "www" subdomain)
+backup_user= # In this case, it is just the ansible user for the [node] instance. For testing purposes.
+deadmanssnitch_url= # See https://deadmanssnitch.com/docs for more information
+pageduty_service_key= # See https://www.pagerduty.com/docs/guides/prometheus-integration-guide/ for more information
+slack_api_url= # See https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/ for more information
+slack_channel= # Must be the same name as the Slack channel, without the "#" symbol
 
-#NB1: Domain names on node and prometheus sections have to be different but you can use on [prometheus] section your [node] domain with additional subdomain for example [grafana.yourdomain.com]
-#NB2: If you have choosed sslip.io or nip.io as a domain name #NB1 is should not concerned you, but may appear let'sencrypt limit error, because for this domain aquire many certificates.
+#NB1: The domain names in the [node] and [prometheus] sections must be different, but you can use the domain from the [node] section with an additional subdomain for the [prometheus] section, for example grafana.yourdomain.com
+#NB2: If you have chosen sslip.io or nip.io as your domain, #NB1 does not apply, but you may encounter a limit error from Let's Encrypt, because these domains acquire many certificates.
 ```
 
 
 ## Prometheus
 
-* Prometheus config file you can find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/prometheus.yml.j2).
+* The Prometheus configuration file can be found [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/prometheus.yml.j2).
 
-* Gathering metrics every 15s and evaluate rules every 15s
+* Metrics are collected every 15 seconds and rules are evaluated every 15 seconds.
 ```yaml
 global:
   scrape_interval:     15s
   evaluation_interval: 15s
 ```
 
-* All rules in alerts directory with yaml format:
+* All rules are in the "alerts" directory and are in YAML format.
 ```yaml
 rule_files:
   - "alerts/*.yml"
@@ -64,7 +62,7 @@ alerting:
       - targets: ['{{ansible_eth1.ipv4.address}}:9093']
 ```
 
-* All exporters on [prometheus] instance connect with prometheus as static_configs:
+* Exporters on the [prometheus] instance connect to Prometheus using static_configs.
 ```yaml
 scrape_configs:
   - job_name: 'prometheus'
@@ -89,7 +87,7 @@ scrape_configs:
       - targets: ['{{ansible_eth1.ipv4.address}}:4040']
 ```
 
-* All exporters on [node] instance connect with prometheus as Discovery target with file_sd_configs. More about it [here](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config). File of targets in json format you can find [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/nodes.json.j2).
+* Exporters on the [node] instance connect to Prometheus using file_sd_configs (discovery target). You can find more information about this [here](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config). The file of targets is in JSON format and can be found [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/templates/nodes.json.j2).
 ```yaml
   - job_name: 'nodes'
     file_sd_configs:
@@ -101,7 +99,7 @@ scrape_configs:
 
 ## Rules
 
-* Some Rules is picked from [here](https://awesome-prometheus-alerts.grep.to/rules.html) and adjusted for this project:
+* Some rules were taken from [here](https://awesome-prometheus-alerts.grep.to/rules.html) and modified for this project:
 
 * Rules for [nginx](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/nginx.yml).
 
@@ -113,7 +111,7 @@ scrape_configs:
 
 * Rules for [prometheus](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/prometheus.yml)
 
-* Rule for backaging data from prometheus [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/prometheus_backup.yml)
+* Rule for backing up data from Prometheus [here](https://github.com/DevEnv-94/monitoring_project/blob/master/prometheus/files/prometheus_backup.yml)
 
 
 ## Alertmanager and alerts.
@@ -127,7 +125,7 @@ route:
   group_wait: 60s
   group_interval: 5m
   repeat_interval: 1h
-  receiver: 'slack-warning' # basic reciever, if alert doesn't match any matchers this reciever gets alert.
+  receiver: 'slack-warning' # The basic receiver gets alerts if they do not match any of the matchers.
   routes:
   - receiver: 'pagerduty-notifications'
     matchers:
@@ -135,7 +133,7 @@ route:
 
   - receiver: 'slack-warning'
     matchers:
-    - severity=~"warning|info" #Slack gets alerts with warning and info severity.
+    - severity=~"warning|info" #Slack receives alerts with warning and info severity.
 
   - receiver: 'DeadMansSwitch'
     repeat_interval: 1m
@@ -215,7 +213,7 @@ inhibit_rules:
 </details>
 
 ### DeadManSnitch alert. 
-This is reciever created for All prometheus monitoring system, always firing and sends signal every minute, when prometheus is dead or some trouble with alertmanager, stops sending signal and you recieve alert.
+This receiver is created for the entire Prometheus monitoring system and always fires, sending a signal every minute. If Prometheus is down or there is a problem with Alertmanager, the signal will stop and you will receive an alert.
 
 
 ```yaml
@@ -228,7 +226,7 @@ This is reciever created for All prometheus monitoring system, always firing and
      severity: none
 ```
 
-This rule have to be always firing.
+This rule is intended to always be active.
 
 ![DeadManSnitch rule](https://github.com/DevEnv-94/monitoring_project/blob/master/images/deadmansnitch.png)
 
@@ -292,7 +290,7 @@ This rule have to be always firing.
 
 ## Nginx(WebServer)
 
-Nginx in this project as TLS termination proxy. Proxy to grafana on [prometheus] instance and proxy to wordpress on [node] instance.
+In this project, Nginx serves as both a TLS termination proxy and a web server. It forwards traffic to Grafana on the [prometheus] instance and to Wordpress on the [node] instance.
 
 ### [node] instance
 
@@ -507,7 +505,7 @@ server {
 
 ## Backup script and Pushgateway
 
-There is Prometheus backup script which creates snapshots then archive and compress it after that sends data to [node] instance and delete created snapshots and sends prometheus_backup metric to pushgateway with value=1 if script worked correctly and value=0 if execute was wrong.
+There is a Prometheus backup script that creates snapshots, archives and compresses them, and then sends the data to the [node] instance. It also sends a prometheus_backup metric to pushgateway with a value of 1 if the script ran correctly and a value of 0 if it encountered an error. The script then deletes the created snapshots.
 
 ```bash
 #!/bin/bash
@@ -538,13 +536,13 @@ fi
 </p>
 </details>
 
-* to create a prometheus data snapshot you need starts prometheus with this command.
+* To create a Prometheus data snapshot, start Prometheus with the following command. 
 
 ```bash
 --web.enable-admin-api
 ```
 
-* Scripts executes with cronjob every day at 17:00.
+* Scripts are executed by a cron job every day at 17:00.
 
 ```yaml
 - name: Ensure a prometheus backup script runs every day at 17:00.
@@ -560,7 +558,7 @@ fi
 
 ## Security
 
-All exporters, alertmanager and Prometheus interact  between itselfs on local network. Nobody has access to it from Internet.
+All exporters, Alertmanager, and Prometheus interact with each other on a local network. There is no access to them from the internet.
 
 ## License
 
