@@ -514,22 +514,31 @@ There is Prometheus backup script which creates snapshots then archive and compr
 ```bash
 #!/bin/bash
 
-if curl -XPOST http://{{ansible_eth1.ipv4.address}}:9090/api/v1/admin/tsdb/snapshot &&
+# Set the URL for the snapshot endpoint
+snapshot_url="http://${ansible_eth1.ipv4.address}:9090/api/v1/admin/tsdb/snapshot"
 
-cd /var/lib/docker/volumes/prometheus_data/_data/snapshots &&
+# Set the directory where snapshots are stored
+snapshot_dir="/var/lib/docker/volumes/prometheus_data/_data/snapshots"
 
-tar -czf "prometheus_backup_data-$(date '+%Y-%m-%d').tar.gz" $(ls /var/lib/docker/volumes/prometheus_data/_data/snapshots) &&
+# Create a new directory for the backup
+backup_dir=$(mktemp -d)
 
-rsync -e "ssh -o StrictHostKeyChecking=no" -zc --remove-source-files /var/lib/docker/volumes/prometheus_data/_data/snapshots/prometheus_backup_data-* user@{{ hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address'] }}:/tmp/ &&
-
-rm -R /var/lib/docker/volumes/prometheus_data/_data/snapshots/*;
-
+# Take the snapshot
+if curl -X POST "$snapshot_url" && 
+    cd "$snapshot_dir" &&
+    tar -czf "$backup_dir/prometheus_backup_data-$(date '+%Y-%m-%d').tar.gz" * &&
+    rsync -e "ssh -o StrictHostKeyChecking=no" -zc --remove-source-files "$backup_dir/prometheus_backup_data-"* "user@${hostvars[groups['node'][0]]['ansible_eth1']['ipv4']['address']}:/tmp/" &&
+    rm -r "$snapshot_dir"/*
 then
-    echo 'prometheus_backup {type="boolean"} 1' | curl --data-binary @- http://{{ansible_eth1.ipv4.address}}:9091/metrics/job/prometheus_backup_data/instance/prometheus
+    # Report success
+    echo 'prometheus_backup {type="boolean"} 1' | curl --data-binary @- "http://${ansible_eth1.ipv4.address}:9091/metrics/job/prometheus_backup_data/instance/prometheus"
 else
-    echo 'prometheus_backup {type="boolean"} 0' | curl --data-binary @- http://{{ansible_eth1.ipv4.address}}:9091/metrics/job/prometheus_backup_data/instance/prometheus
-
+    # Report failure
+    echo 'prometheus_backup {type="boolean"} 0' | curl --data-binary @- "http://${ansible_eth1.ipv4.address}:9091/metrics/job/prometheus_backup_data/instance/prometheus"
 fi
+
+# Clean up temporary files
+rm -r "$backup_dir"
 ```
 
 <details><summary>Prometheus_backup metric (click here)</summary>
